@@ -1,0 +1,67 @@
+{
+  "id": "takwir-v1",
+  "surah": 81,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage proposé et titres validés par l’utilisateur",
+  "tafsirApiUnreliable": true,
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/81:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/81:",
+      "note": "L’API by_ayah tronque les entrées (1–10 au lieu de 1–14, 15–24 au lieu de 15–29) avec repli sur l’entrée précédente. Les 2 sections réelles (1–14, 15–29) ont été vérifiées en lisant le texte des entrées."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 14,
+      "title": "Les bouleversements du Jour du Jugement et le dévoilement des œuvres"
+    },
+    {
+      "from": 15,
+      "to": 29,
+      "title": "Le Coran : une révélation véridique et un rappel pour l’humanité"
+    }
+  ],
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      14,
+      21,
+      26,
+      28,
+      29
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 14,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/81:1"
+      },
+      {
+        "from": 15,
+        "to": 29,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/81:15"
+      }
+    ]
+  },
+  "retrievedAt": "2026-10-25T15:43:57.483856+00:00"
+}

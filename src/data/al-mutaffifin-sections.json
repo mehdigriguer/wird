@@ -1,0 +1,78 @@
+{
+  "id": "mutaffifin-v1",
+  "surah": 83,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage fourni par l’utilisateur",
+  "tafsirApiUnreliable": true,
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/83:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/83:",
+      "note": "L’API by_ayah tronque (7–16 au lieu de 7–17, 18–27 au lieu de 18–28) avec repli sur l’entrée précédente. Le thème 1–17 fusionne les sections 1–6 et 7–17 (fraude et châtiment des pervers), choix de l’utilisateur."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 17,
+      "title": "La fraude, le déni du Jugement et le châtiment des pervers"
+    },
+    {
+      "from": 18,
+      "to": 28,
+      "title": "Le rang élevé des pieux et les délices du Paradis"
+    },
+    {
+      "from": 29,
+      "to": 36,
+      "title": "Les moqueries des mécréants et le triomphe final des croyants"
+    }
+  ],
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      3, 6, 7, 8, 9, 11, 13, 14, 15, 16, 17, 18, 19, 21, 26, 28, 33, 35, 36
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 6,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/83:1"
+      },
+      {
+        "from": 7,
+        "to": 17,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/83:7"
+      },
+      {
+        "from": 18,
+        "to": 28,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/83:18"
+      },
+      {
+        "from": 29,
+        "to": 36,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/83:29"
+      }
+    ]
+  },
+  "retrievedAt": "2026-10-25T15:43:55.192441+00:00"
+}

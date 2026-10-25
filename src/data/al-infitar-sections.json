@@ -1,0 +1,74 @@
+{
+  "id": "infitar-v1",
+  "surah": 82,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage fourni par l’utilisateur",
+  "tafsirApiUnreliable": true,
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/82:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/82:",
+      "note": "L’API by_ayah tronque l’entrée 1–12 à 1–10 avec repli. La coupure 5/6 est confirmée par QSU. La section 13–19 correspond à « The Reward of the Righteous & the Sinners »."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 5,
+      "title": "Les bouleversements du Jour du Jugement et le dévoilement des œuvres"
+    },
+    {
+      "from": 6,
+      "to": 12,
+      "title": "L’insouciance de l’homme et l’enregistrement de ses œuvres"
+    },
+    {
+      "from": 13,
+      "to": 19,
+      "title": "Le sort des hommes et la souveraineté d’Allah au Jour de la Rétribution"
+    }
+  ],
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      5,
+      8,
+      12,
+      15,
+      16,
+      18,
+      19
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 12,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/82:1"
+      },
+      {
+        "from": 13,
+        "to": 19,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/82:13"
+      }
+    ]
+  },
+  "retrievedAt": "2026-10-25T15:43:48.882509+00:00"
+}

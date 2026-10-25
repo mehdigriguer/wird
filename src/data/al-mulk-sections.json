@@ -1,0 +1,111 @@
+{
+  "id": "mulk-v2",
+  "surah": 67,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage fourni par l’utilisateur (remplace la version à 6 thèmes)",
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/67:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/67:",
+      "note": "Le thème 6–14 coupe la section 12–15 d’Ibn Kathir à 14 (confirmé par QSU). Le thème 15–30 fusionne plusieurs sections et dépasse 1 page : le programme le répartit par la longueur à l’intérieur du thème, choix assumé."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 5,
+      "title": "La souveraineté d’Allah, la création et l’épreuve de la vie"
+    },
+    {
+      "from": 6,
+      "to": 14,
+      "title": "Le châtiment des mécréants et la récompense de ceux qui craignent Allah"
+    },
+    {
+      "from": 15,
+      "to": 30,
+      "title": "La dépendance des hommes envers Allah et le rappel du Jugement"
+    }
+  ],
+  "retrievedAt": "2026-10-25T15:43:54.557949+00:00",
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      17,
+      18,
+      19,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 5,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/67:1"
+      },
+      {
+        "from": 6,
+        "to": 11,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/67:6"
+      },
+      {
+        "from": 12,
+        "to": 15,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/67:12"
+      },
+      {
+        "from": 16,
+        "to": 19,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/67:16"
+      },
+      {
+        "from": 20,
+        "to": 27,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/67:20"
+      },
+      {
+        "from": 28,
+        "to": 30,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/67:28"
+      }
+    ]
+  }
+}

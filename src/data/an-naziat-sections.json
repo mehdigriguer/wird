@@ -1,0 +1,97 @@
+{
+  "id": "naziat-v2",
+  "surah": 79,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage fourni par l’utilisateur (remplace la version à 6 thèmes)",
+  "tafsirApiUnreliable": true,
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/79:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/79:",
+      "note": "L’API by_ayah tronque les entrées pour cette sourate (1–10 au lieu de 1–14, 15–24 au lieu de 15–26, 34–43 au lieu de 34–46) avec repli sur l’entrée précédente. Le thème 27–46 fusionne les sections 27–33 et 34–46 d’Ibn Kathir, choix de l’utilisateur."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 14,
+      "title": "Les serments et l’annonce de la résurrection"
+    },
+    {
+      "from": 15,
+      "to": 26,
+      "title": "Moussa et Pharaon : la rébellion et son châtiment"
+    },
+    {
+      "from": 27,
+      "to": 46,
+      "title": "La puissance d’Allah, le Jugement et le sort des hommes"
+    }
+  ],
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      5,
+      7,
+      9,
+      10,
+      11,
+      12,
+      14,
+      15,
+      25,
+      26,
+      30,
+      33,
+      36,
+      39,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 14,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/79:1"
+      },
+      {
+        "from": 15,
+        "to": 26,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/79:15"
+      },
+      {
+        "from": 27,
+        "to": 33,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/79:27"
+      },
+      {
+        "from": 34,
+        "to": 46,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/79:34"
+      }
+    ]
+  },
+  "retrievedAt": "2026-10-25T15:43:56.906163+00:00"
+}
