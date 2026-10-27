@@ -63,7 +63,7 @@ test("verses 20–30 fit one morning rakaat at the 1-page default", async ({
     .getByRole("button", { name: "J’ai prié avec ces versets" })
     .click();
   const after = await stored(page);
-  expect(after.cycles).toBe(2);
+  expect(after.cycles).toBe(1);
   const covered = after.history
     .flatMap((e) => e.passages)
     .filter((p) => p && !p.blocked && p.cycle === 1)

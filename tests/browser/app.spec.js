@@ -515,3 +515,18 @@ test("quota failure is visible and progress remains exportable", async ({
   await page.getByRole("button", { name: "Exporter maintenant" }).click();
   expect((await download).suggestedFilename()).toMatch(/wird/);
 });
+
+test("a cycle ending mid-prayer frees the remaining rakaat with a dedicated note", async ({
+  page,
+}) => {
+  await seed(page, updateKnown(fullState(localDate()), [112, 113, 114]));
+  const cards = page.locator(".prayer-card");
+  const subh = cards.nth(1);
+  await expect(subh).toContainText("An-Nas");
+  await expect(subh).toContainText(
+    "Rakaat libre : on vient de finir un cycle.",
+  );
+  await expect(subh).not.toContainText("prochaine prière");
+  // le cycle 2 reprend à la prière suivante
+  await expect(cards.nth(2)).toContainText("Al-Ikhlas");
+});

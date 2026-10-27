@@ -34,9 +34,8 @@ test("Abasa themes appear in the accordion and drive the daily plan", async ({
     .click();
   const state = await stored(page);
   expect(state.cursor).toBe(0);
-  expect(state.cycles).toBe(2);
+  expect(state.cycles).toBe(1);
   expect(state.day.results.fajr.passages.map((p) => p.segmentation)).toEqual([
-    "abasa-v1",
     "abasa-v1",
   ]);
 });

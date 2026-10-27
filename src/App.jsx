@@ -963,8 +963,9 @@ function PrayerCard({
         prayer.passages.length < prayer.rakaat && (
           <p className="defer-note">
             <span className="rakaat-number">{prayer.passages.length + 1}</span>
-            Rakaat libre : la sourate suivante attend la prochaine prière pour
-            être faite en 1 seule prière.
+            {prayer.cycleEnd
+              ? "Rakaat libre : on vient de finir un cycle."
+              : "Rakaat libre : la sourate suivante attend la prochaine prière pour être faite en 1 seule prière."}
           </p>
         )}
       {skipped && (

@@ -35,9 +35,8 @@ test("At-Takwir themes appear in the accordion and drive the daily plan", async 
     .click();
   const state = await stored(page);
   expect(state.cursor).toBe(0);
-  expect(state.cycles).toBe(2);
+  expect(state.cycles).toBe(1);
   expect(state.day.results.fajr.passages.map((p) => p.segmentation)).toEqual([
-    "takwir-v1",
     "takwir-v1",
   ]);
 });

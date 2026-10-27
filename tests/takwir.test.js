@@ -69,11 +69,9 @@ test("At-Takwir passages fill by length inside one theme and never cross it", ()
   const fajr = planDay(state, corpus)[0];
   assert.deepEqual(
     fajr.passages.map((p) => [p.from, p.to]),
-    [
-      [1, 29],
-      [1, 29],
-    ],
+    [[1, 29]],
   );
+  assert.ok(fajr.cycleEnd);
   assert.ok(fajr.passages.every((p) => passageWithinRule(p, 1)));
 });
 

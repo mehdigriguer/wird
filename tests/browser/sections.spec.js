@@ -109,7 +109,7 @@ test("a learned range ending mid-theme stops at the learned verse without extend
   await page
     .getByRole("button", { name: "J’ai prié avec ces versets" })
     .click();
-  expect((await stored(page)).cycles).toBe(2);
+  expect((await stored(page)).cycles).toBe(1);
 });
 
 test("a range starting mid-theme simply starts at that verse", async ({

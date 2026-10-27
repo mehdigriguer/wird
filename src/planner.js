@@ -421,6 +421,7 @@ export function planPrayer(
   scheduleLimit = prayer.limit,
 ) {
   const passages = [];
+  let cycleEnd = false;
   for (let i = 0; i < prayer.rakaat; i++) {
     // Une sourate qui tient dans une prière complète de 2 rakaat à la limite
     // la plus haute du programme est atomique : si elle ne peut pas finir
@@ -445,10 +446,17 @@ export function planPrayer(
       next = applyOverride(corpus, cursor, cycles, next.passage, overrides[i]);
     }
     passages.push(next.passage);
+    const finished = next.cycles !== cycles;
     cursor = next.cursor;
     cycles = next.cycles;
+    // Un cycle qui se termine au milieu d'une prière libère les rakaat
+    // restantes : le nouveau cycle reprend à la prière suivante.
+    if (finished) {
+      cycleEnd = true;
+      break;
+    }
   }
-  return { passages, cursor, cycles };
+  return { passages, cursor, cycles, cycleEnd };
 }
 
 export function planDay(state, corpus, activeOverrides = {}) {
@@ -457,7 +465,13 @@ export function planDay(state, corpus, activeOverrides = {}) {
   let active = true;
   return dailyPrayers(state).map((prayer) => {
     const result = state.day.results[prayer.id];
-    if (result) return { ...prayer, result, passages: result.passages };
+    if (result)
+      return {
+        ...prayer,
+        result,
+        passages: result.passages,
+        ...(result.cycleEnd ? { cycleEnd: true } : {}),
+      };
     const next = planPrayer(
       corpus,
       cursor,
@@ -469,7 +483,11 @@ export function planDay(state, corpus, activeOverrides = {}) {
     active = false;
     cursor = next.cursor;
     cycles = next.cycles;
-    return { ...prayer, passages: next.passages };
+    return {
+      ...prayer,
+      passages: next.passages,
+      ...(next.cycleEnd ? { cycleEnd: true } : {}),
+    };
   });
 }
 
@@ -501,7 +519,11 @@ export function recordPrayer(state, corpus, prayerId, status, overrides = {}) {
   if (status === "done" && !next.passages.some((p) => p && !p.blocked)) {
     throw new Error("Aucun passage ne peut être validé pour cette prière.");
   }
-  const result = { status, passages: status === "done" ? next.passages : [] };
+  const result = {
+    status,
+    passages: status === "done" ? next.passages : [],
+    ...(status === "done" && next.cycleEnd ? { cycleEnd: true } : {}),
+  };
   return {
     ...state,
     cursor: status === "done" ? next.cursor : state.cursor,

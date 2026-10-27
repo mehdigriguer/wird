@@ -111,13 +111,10 @@ test("verses 20–30 complete the morning at the 1-page default", () => {
   const fajr = planDay(state, corpus)[0];
   assert.deepEqual(
     fajr.passages.map((p) => [p.from, p.to]),
-    [
-      [20, 30],
-      [20, 30],
-    ],
+    [[20, 30]],
   );
   const after = recordPrayer(state, corpus, "fajr", "done");
-  assert.equal(after.cycles, 2);
+  assert.equal(after.cycles, 1);
 });
 
 test("a full Al-Mulk cycle covers exactly the 30 verses and round-trips", () => {

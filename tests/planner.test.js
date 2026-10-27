@@ -160,7 +160,7 @@ test("selection is canonical and Fatiha is excluded from revision", () => {
   );
 });
 
-test("short surahs never share a rakaat and a cycle can wrap within a prayer", () => {
+test("short surahs never share a rakaat and a new cycle waits the next prayer", () => {
   const state = stateFor([112, 113, 114]);
   const corpus = corpusFor(state.known);
   const plan = planDay(state, corpus);
@@ -173,18 +173,16 @@ test("short surahs never share a rakaat and a cycle can wrap within a prayer", (
   );
   assert.deepEqual(
     plan[1].passages.map((p) => [p.surah, p.cycle]),
-    [
-      [114, 1],
-      [112, 2],
-    ],
+    [[114, 1]],
   );
+  assert.ok(plan[1].cycleEnd);
   assert.equal(state.cursor, 0);
   assert.equal(state.cycles, 0);
   const afterFajr = recordPrayer(state, corpus, "fajr", "done");
   assert.equal(afterFajr.cursor, 9);
   const afterSubh = recordPrayer(afterFajr, corpus, "subh", "done");
   assert.equal(afterSubh.cycles, 1);
-  assert.equal(afterSubh.cursor, 4);
+  assert.equal(afterSubh.cursor, 0);
 });
 
 test("every possible starting verse respects all ceilings, one surah, exact order", () => {
@@ -310,7 +308,7 @@ test("undo restores progress even across a completed cycle", () => {
   const state = stateFor([112]);
   const corpus = corpusFor([112]);
   const next = recordPrayer(state, corpus, "fajr", "done");
-  assert.equal(next.cycles, 2);
+  assert.equal(next.cycles, 1);
   assert.ok(canUndo(next));
   assert.deepEqual(undoLast(next), state);
   const skipped = recordPrayer(state, corpus, "fajr", "skipped");
@@ -340,7 +338,7 @@ test("changing selection starts a new active tour but keeps history and complete
   const same = updateKnown(state, [112]);
   assert.equal(same, state);
   const next = updateKnown(state, [2]);
-  assert.equal(next.cycles, 2);
+  assert.equal(next.cycles, 1);
   assert.equal(next.cursor, 0);
   assert.deepEqual(next.history, state.history);
   assert.equal(canUndo(next), false);
@@ -448,7 +446,7 @@ test("one known verse can complete a cycle without reciting the rest of its sura
   const ranges = { 112: { from: 3, to: 3 } };
   const corpus = corpusFor([112], ranges);
   const state = recordPrayer(stateFor([112], ranges), corpus, "fajr", "done");
-  assert.equal(state.cycles, 2);
+  assert.equal(state.cycles, 1);
   assert.ok(
     state.day.results.fajr.passages.every((p) => p.from === 3 && p.to === 3),
   );
@@ -513,7 +511,7 @@ test("legacy backups migrate without losing selection, cursor, history, or compl
     buildCorpus(chapters, migrated.known, migrated.ranges),
     corpusFor(legacy.known),
   );
-  assert.equal(migrated.cursor, 4);
+  assert.equal(migrated.cursor, 0);
   assert.equal(migrated.cycles, 1);
   assert.equal(undoLast(migrated).cycles, 0);
   const invalidLegacy = { ...legacy, cursor: 999 };
@@ -750,6 +748,29 @@ test("a surah no prayer can hold whole is placed split instead of blocking", () 
   assert.ok(
     plan.every((p) => p.passages.every((x) => !x || !x.blocked)),
   );
+});
+
+test("a cycle ending mid-prayer frees the remaining rakaat", () => {
+  const state = stateFor([112, 113, 114]);
+  const corpus = corpusFor(state.known, state.ranges);
+  const span = (p) =>
+    p.passages.filter(Boolean).map((x) => `${x.surah}:${x.from}-${x.to}`);
+  const plan = planDay(state, corpus);
+  const byId = Object.fromEntries(plan.map((p) => [p.id, p]));
+  // Le corpus se termine à Subh r1 : r2 libre, le cycle 2 reprend à Dhuhr
+  assert.deepEqual(span(byId.fajr), ["112:1-4", "113:1-5"]);
+  assert.ok(!byId.fajr.cycleEnd);
+  assert.deepEqual(span(byId.subh), ["114:1-6"]);
+  assert.ok(byId.subh.cycleEnd);
+  assert.equal(span(byId.dhuhr)[0], "112:1-4");
+  // La validation garde la marque de fin de cycle
+  let done = recordPrayer(state, corpus, "fajr", "done");
+  done = recordPrayer(done, corpus, "subh", "done");
+  assert.ok(done.day.results.subh.cycleEnd);
+  assert.equal(done.cycles, 1);
+  // Le flag survit au rechargement du jour dans planDay
+  const reloaded = planDay(done, corpus);
+  assert.ok(reloaded.find((p) => p.id === "subh").cycleEnd);
 });
 
 test("a surah that fits one prayer never straddles two prayers", () => {

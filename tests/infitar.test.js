@@ -45,14 +45,11 @@ test("the whole surah chains into one rakaat at the 1-page default", () => {
   const fajr = planDay(state, corpus)[0];
   assert.deepEqual(
     fajr.passages.map((p) => [p.from, p.to]),
-    [
-      [1, 19],
-      [1, 19],
-    ],
+    [[1, 19]],
   );
   assert.ok(fajr.passages.every((p) => passageWithinRule(p, 1)));
   const after = recordPrayer(state, corpus, "fajr", "done");
-  assert.equal(after.cycles, 2);
+  assert.equal(after.cycles, 1);
   assert.deepEqual(parseBackup(JSON.stringify(after), chapters), after);
 });
 

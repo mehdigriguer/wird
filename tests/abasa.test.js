@@ -71,11 +71,9 @@ test("every Abasa theme fits half a page and never mixes with the next", () => {
   const fajr = planDay(state, corpus)[0];
   assert.deepEqual(
     fajr.passages.map((p) => [p.from, p.to]),
-    [
-      [1, 42],
-      [1, 42],
-    ],
+    [[1, 42]],
   );
+  assert.ok(fajr.cycleEnd);
   assert.ok(fajr.passages.every((p) => passageWithinRule(p, 1)));
 });
 
