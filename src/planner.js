@@ -399,13 +399,34 @@ function completesInSlots(corpus, cursor, cycles, limit, slots) {
   return false;
 }
 
-export function planPrayer(corpus, cursor, cycles, prayer, overrides = {}) {
+// Plus grande limite parmi les prières de 2 rakaat ou plus du programme.
+// C'est la référence d'atomicité : une sourate qui tient dans une prière à
+// cette limite ne doit jamais être coupée entre deux prières. Si aucune
+// prière du programme ne peut la contenir entière, le report est impossible
+// et on la place coupée plutôt que de bloquer le cycle.
+function maxScheduleLimit(state) {
+  const enabled = state.prayersEnabled ?? {};
+  const limits = PRAYERS.filter(
+    (p) => p.rakaat >= 2 && (!p.optional || enabled[p.id] === true),
+  ).map((p) => state.limits[p.id] ?? 0.5);
+  return limits.length ? Math.max(...limits) : 0;
+}
+
+export function planPrayer(
+  corpus,
+  cursor,
+  cycles,
+  prayer,
+  overrides = {},
+  scheduleLimit = prayer.limit,
+) {
   const passages = [];
   for (let i = 0; i < prayer.rakaat; i++) {
-    // Une sourate qui tient dans une prière complète de 2 rakaat est
-    // atomique : si elle ne peut pas finir dans les rakaat restantes de
-    // cette prière, son début est reporté à la suivante et la rakaat reste
-    // vide. Une sourate plus longue traverse librement.
+    // Une sourate qui tient dans une prière complète de 2 rakaat à la limite
+    // la plus haute du programme est atomique : si elle ne peut pas finir
+    // dans les rakaat restantes de cette prière, son début est reporté à la
+    // suivante et la rakaat reste vide. Une sourate plus longue traverse
+    // librement.
     if (
       corpus.length &&
       (cursor === 0 || corpus[cursor - 1].surah !== corpus[cursor].surah) &&
@@ -416,7 +437,7 @@ export function planPrayer(corpus, cursor, cycles, prayer, overrides = {}) {
         prayer.limit,
         prayer.rakaat - i,
       ) &&
-      completesInSlots(corpus, cursor, cycles, prayer.limit, 2)
+      completesInSlots(corpus, cursor, cycles, scheduleLimit, 2)
     )
       break;
     let next = takePassage(corpus, cursor, cycles, prayer.limit);
@@ -432,6 +453,7 @@ export function planPrayer(corpus, cursor, cycles, prayer, overrides = {}) {
 
 export function planDay(state, corpus, activeOverrides = {}) {
   let { cursor, cycles } = state;
+  const scheduleLimit = maxScheduleLimit(state);
   let active = true;
   return dailyPrayers(state).map((prayer) => {
     const result = state.day.results[prayer.id];
@@ -442,6 +464,7 @@ export function planDay(state, corpus, activeOverrides = {}) {
       cycles,
       prayer,
       active ? activeOverrides : {},
+      scheduleLimit,
     );
     active = false;
     cursor = next.cursor;
@@ -453,6 +476,7 @@ export function planDay(state, corpus, activeOverrides = {}) {
 export function recordPrayer(state, corpus, prayerId, status, overrides = {}) {
   if (!["done", "skipped"].includes(status))
     throw new Error("Validation inconnue.");
+  const scheduleLimit = maxScheduleLimit(state);
   let prayer = null;
   let next = null;
   for (const p of dailyPrayers(state)) {
@@ -463,6 +487,7 @@ export function recordPrayer(state, corpus, prayerId, status, overrides = {}) {
       state.cycles,
       p,
       status === "done" ? overrides : {},
+      scheduleLimit,
     );
     // Prière entièrement reportée (sourate gardée entière) : elle ne
     // consomme rien et ne bloque pas la validation des suivantes.
@@ -548,11 +573,19 @@ export function forecast(state, corpus, includeExtras = true) {
     state,
     includeExtras ? state.day.extras : [],
   ).filter((p) => !state.day.results[p.id]);
+  const scheduleLimit = maxScheduleLimit(state);
   const regular = dailyPrayers(state, []);
   for (let day = 0; day <= corpus.length + 1; day++) {
     const before = cursor;
     for (const prayer of day === 0 ? today : regular) {
-      const next = planPrayer(corpus, cursor, cycles, prayer);
+      const next = planPrayer(
+        corpus,
+        cursor,
+        cycles,
+        prayer,
+        {},
+        scheduleLimit,
+      );
       cursor = next.cursor;
       cycles = next.cycles;
       if (cycles >= target) return { days: day + 1, dateOffset: day };

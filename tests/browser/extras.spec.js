@@ -85,7 +85,7 @@ test("a surah that fits one prayer is never split across two", async ({
   await expect(isha).toContainText("Al-Mutaffifin · v. 29–36");
   // Witr entièrement reporté, n'apparaît pas comme à valider
   const witr = cards.nth(7);
-  await expect(witr).toContainText("Rien à réviser ici");
+  await expect(witr).toContainText("Prière libre");
   await expect(witr).not.toContainText("An-Naba");
   // la validation suit son cours sans être bloquée par Witr
   for (let i = 0; i < 7; i++)

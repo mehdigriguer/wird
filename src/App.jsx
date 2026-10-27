@@ -927,8 +927,8 @@ function PrayerCard({
       </div>
       {!skipped && prayer.passages.length === 0 && (
         <p className="defer-note">
-          Rien à réviser ici : la sourate suivante attend une prière entière
-          pour rester d’un bloc.
+          Prière libre : la sourate suivante attend la prochaine prière pour
+          être faite en 1 seule prière.
         </p>
       )}
       {!skipped && prayer.passages.length > 0 && (

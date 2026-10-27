@@ -720,6 +720,38 @@ test("learnedPages spans from first to last learned verse per surah", () => {
   assert.equal(learnedPages(chapters, []), 0);
 });
 
+test("a surah that fits one prayer at the schedule's highest limit stays whole", () => {
+  // An-Nazi'at tient dans une prière à 1 page/rakaat mais pas à 0,5 : elle
+  // est reportée entière à la première prière qui peut la contenir.
+  const state = stateFor([79]);
+  state.limits = Object.fromEntries(
+    Object.keys(state.limits).map((id) => [id, id === "dhuhr" ? 1 : 0.5]),
+  );
+  const plan = planDay(state, corpusFor(state.known, state.ranges));
+  const byId = Object.fromEntries(plan.map((p) => [p.id, p]));
+  const span = (p) =>
+    p.passages.filter(Boolean).map((x) => `${x.surah}:${x.from}-${x.to}`);
+  assert.deepEqual(byId.fajr.passages, []);
+  assert.deepEqual(byId.subh.passages, []);
+  assert.deepEqual(span(byId.dhuhr), ["79:1-26", "79:27-46"]);
+});
+
+test("a surah no prayer can hold whole is placed split instead of blocking", () => {
+  // Toutes les limites à 0,5 : aucune prière ne peut contenir An-Nazi'at
+  // entière, elle est donc placée coupée plutôt que reportée à l'infini.
+  const state = stateFor([79]);
+  state.limits = Object.fromEntries(
+    Object.keys(state.limits).map((id) => [id, 0.5]),
+  );
+  const plan = planDay(state, corpusFor(state.known, state.ranges));
+  const byId = Object.fromEntries(plan.map((p) => [p.id, p]));
+  assert.equal(byId.fajr.passages.length, 2);
+  assert.ok(byId.fajr.passages.every((p) => p && p.surah === 79));
+  assert.ok(
+    plan.every((p) => p.passages.every((x) => !x || !x.blocked)),
+  );
+});
+
 test("a surah that fits one prayer never straddles two prayers", () => {
   const state = updateKnown(
     fullState("2026-10-05"),
