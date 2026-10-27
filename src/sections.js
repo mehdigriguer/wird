@@ -20,6 +20,10 @@ import sharhSections from "./data/ash-sharh-sections.json" with { type: "json" }
 import tinSections from "./data/at-tin-sections.json" with { type: "json" };
 import alaqSections from "./data/al-alaq-sections.json" with { type: "json" };
 import qadrSections from "./data/al-qadr-sections.json" with { type: "json" };
+import bayyinahSections from "./data/al-bayyinah-sections.json" with { type: "json" };
+import zalzalahSections from "./data/az-zalzalah-sections.json" with { type: "json" };
+import adiyatSections from "./data/al-adiyat-sections.json" with { type: "json" };
+import qariahSections from "./data/al-qariah-sections.json" with { type: "json" };
 import takathurSections from "./data/at-takathur-sections.json" with { type: "json" };
 import asrSections from "./data/al-asr-sections.json" with { type: "json" };
 import humazahSections from "./data/al-humazah-sections.json" with { type: "json" };
@@ -59,6 +63,10 @@ export const SECTIONS = [
   tinSections,
   alaqSections,
   qadrSections,
+  bayyinahSections,
+  zalzalahSections,
+  adiyatSections,
+  qariahSections,
   takathurSections,
   asrSections,
   humazahSections,
@@ -96,6 +104,10 @@ export {
   tinSections,
   alaqSections,
   qadrSections,
+  bayyinahSections,
+  zalzalahSections,
+  adiyatSections,
+  qariahSections,
   takathurSections,
   asrSections,
   humazahSections,
