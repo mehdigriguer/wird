@@ -8,7 +8,9 @@ import {
   dailyPrayers,
   forecast,
   isValidRange,
+  juzCoverage,
   knownRange,
+  learnedJuz,
   learnedPages,
   localDate,
   newState,
@@ -22,6 +24,7 @@ import {
 import { parseBackup, validateState } from "../src/storage.js";
 import { fullState, passageWithinRule } from "./helpers.js";
 import { sectionFor } from "../src/sections.js";
+import juzData from "../src/data/juz.json" with { type: "json" };
 
 const chapters = data.chapters;
 const stateFor = (known, ranges = {}) =>
@@ -777,4 +780,42 @@ test("validation skips a fully deferred prayer", () => {
   assert.throws(() => recordPrayer(state, corpus, "witr", "done"));
   const after = recordPrayer(state, corpus, "extra-q", "done");
   assert.ok(after.day.results["extra-q"]);
+});
+
+test("juz boundaries are 30 ordered starts taken from Quran.com", () => {
+  const { starts } = juzData;
+  assert.equal(starts.length, 30);
+  assert.deepEqual(starts[0], [1, 1]);
+  assert.deepEqual(starts[6], [5, 82]);
+  assert.deepEqual(starts[29], [78, 1]);
+  for (let i = 1; i < starts.length; i++) {
+    const [s0, v0] = starts[i - 1];
+    const [s1, v1] = starts[i];
+    assert.ok(s1 > s0 || (s1 === s0 && v1 > v0));
+    assert.ok(v1 <= chapters[s1 - 1].verses.length);
+  }
+});
+
+test("juz coverage follows the learned verses, split at juz limits", () => {
+  const close = (a, b) => Math.abs(a - b) < 1e-9;
+  assert.ok(juzCoverage(chapters, []).every((c) => c === 0));
+  const amma = Array.from({ length: 37 }, (_, i) => 78 + i);
+  const ammaCov = juzCoverage(chapters, amma);
+  assert.ok(close(ammaCov[29], 1));
+  assert.ok(ammaCov.slice(0, 29).every((c) => c === 0));
+  assert.equal(learnedJuz(chapters, amma), 1);
+  const kahf = juzCoverage(chapters, [18]);
+  assert.ok(kahf[14] > 0 && kahf[14] < 1);
+  assert.ok(kahf[15] > 0 && kahf[15] < 1);
+  assert.equal(learnedJuz(chapters, [18]), 0);
+  const half = juzCoverage(chapters, [18], { 18: { from: 75, to: 110 } });
+  assert.equal(half[14], 0);
+  assert.ok(close(half[15], kahf[15]));
+  assert.equal(
+    learnedJuz(
+      chapters,
+      chapters.map((c) => c.id),
+    ),
+    30,
+  );
 });

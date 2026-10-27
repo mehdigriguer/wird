@@ -102,10 +102,17 @@ test("partial memorization is editable, persisted and used by the cycle and stat
     expect(p.to).toBeLessThanOrEqual(40);
   await page.reload();
   await page.getByRole("button", { name: "Mémorisation", exact: true }).click();
-  await expect(page.locator(".memory-heading")).toContainText("0 entières");
-  await expect(page.locator(".memory-heading")).toContainText("1 en cours");
-  await expect(page.locator(".memory-heading")).toContainText("≈ 5,3 pages");
+  const stats = page.locator(".memory-heading .progress-stats span");
+  await expect(stats.nth(0)).toContainText("0");
+  await expect(stats.nth(0)).toContainText("surat apprise");
+  await expect(stats.nth(1)).toContainText("1");
+  await expect(stats.nth(1)).toContainText("surat en cours");
+  await expect(stats.nth(2)).toContainText("0");
+  await expect(stats.nth(2)).toContainText("juz appris");
+  await expect(stats.nth(3)).toContainText("5,3");
+  await expect(stats.nth(3)).toContainText("pages apprises");
   await expect(page.locator(".memory-heading")).toContainText("0,9 %");
+  await expect(page.locator(".memory-heading")).toContainText("du Coran");
   const baqarahCard = page.getByRole("button", {
     name: /Al-Baqarah, versets 1 à 40 appris/,
   });
@@ -131,8 +138,11 @@ test("partial memorization is editable, persisted and used by the cycle and stat
   await page.getByRole("radio", { name: /Toute la sourate/ }).check();
   await page.getByRole("button", { name: "Enregistrer", exact: true }).click();
   expect((await stored(page)).ranges).toEqual({});
-  await expect(page.locator(".memory-heading")).toContainText("1 entières");
-  await expect(page.locator(".memory-heading")).toContainText("0 en cours");
+  const after = page.locator(".memory-heading .progress-stats span");
+  await expect(after.nth(0)).toContainText("1");
+  await expect(after.nth(0)).toContainText("surat apprise");
+  await expect(after.nth(1)).toContainText("0");
+  await expect(after.nth(1)).toContainText("surat en cours");
 });
 
 test("invalid portions cannot be saved, even when hidden by the search", async ({

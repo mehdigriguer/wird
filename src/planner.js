@@ -1,3 +1,4 @@
+import juzData from "./data/juz.json" with { type: "json" };
 import { sectionFor, sectionsForSurah } from "./sections.js";
 
 export const PRAYERS = [
@@ -194,6 +195,51 @@ export function learnedPages(chapters, known, ranges = {}) {
         (coordinate(endPage, endLine, true) - coordinate(startPage, startLine))
       );
     }, 0);
+}
+
+// Part apprise de chaque juz (0 à 1), mesurée comme learnedPages : par
+// étendue de lignes du mushaf, découpée aux limites de juz.
+export function juzCoverage(chapters, known, ranges = {}) {
+  const coordinate = verseCoordinates(chapters);
+  const starts = juzData.starts;
+  const selected = new Set(known);
+  const total = Array(starts.length).fill(0);
+  const learned = Array(starts.length).fill(0);
+  const span = (chapter, from, to) => {
+    const [startPage, startLine] = chapter.verses[from - 1];
+    const [, , endPage, endLine] = chapter.verses[to - 1];
+    return (
+      coordinate(endPage, endLine, true) - coordinate(startPage, startLine)
+    );
+  };
+  let juz = 0;
+  for (const chapter of chapters) {
+    const range = selected.has(chapter.id) ? knownRange(chapter, ranges) : null;
+    const flush = (from, to) => {
+      total[juz] += span(chapter, from, to);
+      if (!range) return;
+      const a = Math.max(from, range.from);
+      const b = Math.min(to, range.to);
+      if (a <= b) learned[juz] += span(chapter, a, b);
+    };
+    let pieceStart = 1;
+    for (let verse = 1; verse <= chapter.verses.length; verse++) {
+      const next = starts[juz + 1];
+      if (next && next[0] === chapter.id && next[1] === verse) {
+        if (verse > pieceStart) flush(pieceStart, verse - 1);
+        juz++;
+        pieceStart = verse;
+      }
+    }
+    flush(pieceStart, chapter.verses.length);
+  }
+  return total.map((t, i) => (t ? Math.min(1, learned[i] / t) : 0));
+}
+
+// Nombre de juz entièrement appris.
+export function learnedJuz(chapters, known, ranges = {}) {
+  return juzCoverage(chapters, known, ranges).filter((c) => c >= 1 - 1e-9)
+    .length;
 }
 
 export function buildCorpus(chapters, known, ranges = {}) {

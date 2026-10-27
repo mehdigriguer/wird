@@ -7,6 +7,8 @@ import {
   forecast,
   isValidRange,
   knownRange,
+  juzCoverage,
+  learnedJuz,
   learnedPages,
   localDate,
   newState,
@@ -1134,6 +1136,10 @@ export default function App() {
     [state.known, state.ranges],
   );
   const pagesPct = (knownPages / 604) * 100;
+  const juzCount = useMemo(
+    () => learnedJuz(chapters, state.known, state.ranges),
+    [state.known, state.ranges],
+  );
 
   function commit(transform) {
     if (storageError) return false;
@@ -1626,31 +1632,77 @@ export default function App() {
                   <section className="memory-heading">
                     <h1>Mémorisation.</h1>
                     <div className="progress-block panel">
-                      <div className="progress-line">
-                        <div
-                          className="progress-track"
+                      <div className="progress-hero">
+                        <span
+                          className="progress-frame"
                           role="progressbar"
                           aria-valuenow={pagesPct.toFixed(1)}
                           aria-valuemin="0"
                           aria-valuemax="100"
                           aria-label={`${pagesPct.toFixed(1)} % du Quran mémorisé`}
                         >
-                          <span
-                            className="progress-fill"
-                            style={{ width: `${pagesPct}%` }}
-                          />
-                          <span className="progress-value">
-                            {pagesPct.toFixed(1).replace(".", ",")} %
+                          <svg viewBox="0 0 116 68" aria-hidden="true">
+                            <rect
+                              className="frame-track"
+                              x="2"
+                              y="2"
+                              width="112"
+                              height="64"
+                              rx="14"
+                              pathLength="100"
+                            />
+                            <rect
+                              className="frame-fill"
+                              x="2"
+                              y="2"
+                              width="112"
+                              height="64"
+                              rx="14"
+                              pathLength="100"
+                              style={{
+                                strokeDasharray: `${pagesPct} 100`,
+                                visibility:
+                                  pagesPct > 0 ? "visible" : "hidden",
+                              }}
+                            />
+                          </svg>
+                          <span className="progress-ring-text">
+                            <span className="progress-big">
+                              {pagesPct.toFixed(1).replace(".", ",")}{" "}
+                              <small>%</small>
+                            </span>
+                            <span className="progress-label">du Coran</span>
                           </span>
-                        </div>
-                      </div>
-                      <p className="progress-meta">
-                        <span>
-                          ≈ {knownPages.toFixed(1).replace(".", ",")} pages
                         </span>
-                        <span>{completeCount} entières</span>
-                        <span>{partialCount} en cours</span>
-                      </p>
+                      </div>
+                      <div className="progress-stats">
+                        <span>
+                          <b>{completeCount}</b>
+                          <em>
+                            {completeCount > 1
+                              ? "surats apprises"
+                              : "surat apprise"}
+                          </em>
+                        </span>
+                        <span>
+                          <b>{partialCount}</b>
+                          <em>
+                            {partialCount > 1
+                              ? "surats en cours"
+                              : "surat en cours"}
+                          </em>
+                        </span>
+                        <span>
+                          <b>{juzCount}</b>
+                          <em>juz appris</em>
+                        </span>
+                        <span>
+                          <b>≈ {knownPages.toFixed(1).replace(".", ",")}</b>
+                          <em>
+                            {knownPages > 1 ? "pages apprises" : "page apprise"}
+                          </em>
+                        </span>
+                      </div>
                     </div>
                   </section>
                   <MemoryToolbar
