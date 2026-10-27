@@ -15,6 +15,15 @@ async function stored(page) {
   return page.evaluate((k) => JSON.parse(localStorage.getItem(k)), key);
 }
 
+test("changing page scrolls back to the top", async ({ page }) => {
+  await seed(page, updateKnown(fullState(localDate()), [18, 67, 112]));
+  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.evaluate(() => window.scrollTo(0, 800));
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Mémorisation", exact: true }).click();
+  expect(await page.evaluate(() => window.scrollY)).toBe(0);
+});
+
 test("an open modal locks background scrolling", async ({ page }) => {
   await seed(page, updateKnown(fullState(localDate()), [112]));
   const overflow = () =>

@@ -1108,6 +1108,9 @@ export default function App() {
   useEffect(() => {
     setOverrides({});
   }, [nextId, state.day.date, state.epoch]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [view]);
   const estimate = useMemo(() => forecast(state, corpus), [state, corpus]);
   const baseline = useMemo(
     () => forecast(state, corpus, false),
