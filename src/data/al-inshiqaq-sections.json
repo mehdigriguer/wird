@@ -1,0 +1,76 @@
+{
+  "id": "inshiqaq-v1",
+  "surah": 84,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage fourni par l’utilisateur",
+  "tafsirApiUnreliable": true,
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/84:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/84:",
+      "note": "L’API by_ayah tronque l’entrée 1–15 à 1–10 avec repli. La coupure 5/6 est confirmée par QSU. La section 16–25 correspond à « Swearing by the Various Stages of Man's Journey »."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 5,
+      "title": "Les bouleversements cosmiques du Jour du Jugement"
+    },
+    {
+      "from": 6,
+      "to": 15,
+      "title": "Le labeur de l’homme et les deux destins"
+    },
+    {
+      "from": 16,
+      "to": 25,
+      "title": "Le serment par le crépuscule, la nuit et la lune, le refus de croire et l’annonce du châtiment"
+    }
+  ],
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      3,
+      5,
+      9,
+      12,
+      13,
+      15,
+      19,
+      21,
+      25
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 15,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/84:1"
+      },
+      {
+        "from": 16,
+        "to": 25,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/84:16"
+      }
+    ]
+  },
+  "retrievedAt": "2026-10-27T13:05:25.051103+00:00"
+}
