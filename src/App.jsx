@@ -1699,20 +1699,13 @@ export default function App() {
                                   : `versets ${range.from} à ${range.to} appris`
                             }, modifier`}
                           >
-                            <span className="surah-number">{c.id}</span>
-                            <div>
-                              <h3>{c.name}</h3>
-                              <p>
-                                {!known
-                                  ? `${c.verses.length} versets · pas encore apprise`
-                                  : complete
-                                    ? `${c.verses.length} versets · entière${c.id === 1 ? " · hors rotation" : ""}`
-                                    : `Versets ${range.from} à ${range.to} · en cours`}
-                              </p>
-                            </div>
-                            <span className="arabic" lang="ar" dir="rtl">
-                              {c.arabic}
+                            <span className="card-top">
+                              <span className="surah-number">{c.id}</span>
+                              <span className="arabic" lang="ar" dir="rtl">
+                                {c.arabic}
+                              </span>
                             </span>
+                            <h3>{c.name}</h3>
                           </button>
                         );
                       })}
@@ -1739,18 +1732,13 @@ export default function App() {
                           disabled={!sections}
                           onClick={() => sections && setSectionsSurah(c.id)}
                         >
-                          <span className="surah-number">{c.id}</span>
-                          <div>
-                            <h3>{c.name}</h3>
-                            <p>
-                              {sections
-                                ? `${sections.blocks.length} thèmes · ${c.verses.length} versets`
-                                : `${c.verses.length} versets · pas encore découpée`}
-                            </p>
-                          </div>
-                          <span className="arabic" lang="ar" dir="rtl">
-                            {c.arabic}
+                          <span className="card-top">
+                            <span className="surah-number">{c.id}</span>
+                            <span className="arabic" lang="ar" dir="rtl">
+                              {c.arabic}
+                            </span>
                           </span>
+                          <h3>{c.name}</h3>
                         </button>
                       );
                     })}

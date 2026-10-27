@@ -1241,62 +1241,85 @@ select {
 }
 .memory-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
 }
 .memory-card {
+  position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 15px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 17px;
+  gap: 4px;
+  border: 1px solid #e9ede3;
+  border-radius: 12px;
+  padding: 16px 10px 12px;
   background: #fffefa;
+  text-align: center;
+}
+.card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
 }
 .memory-card h3 {
-  font-size: 13px;
-  font-weight: 550;
+  font-size: 11px;
+  font-weight: 500;
+  color: #5c6a5a;
+  margin-top: 0;
+  letter-spacing: 0.2px;
 }
 .memory-card p {
   font-size: 10px;
   color: var(--muted);
-  margin-top: 5px;
+  margin-top: 0;
+  line-height: 1.5;
 }
 .memory-card .arabic {
-  margin-left: auto;
-  color: #829270;
-  font-size: 20px;
+  color: #7a8a6d;
+  font-size: 24px;
+  line-height: 1.3;
 }
 .surah-card {
   text-align: left;
   cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
 }
 .surah-card:hover:not(:disabled) {
-  border-color: #b9c8ae;
-  background: #f6f9f1;
+  border-color: #a7bc9a;
+  box-shadow: 0 3px 12px #17382d16;
+  transform: translateY(-1px);
 }
 .surah-card.greyed {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 .surah-card.learned {
-  border-color: #9db98c;
-  background: #eef4e7;
+  background: #f0f5e9;
+  border-color: #c9d8b8;
 }
 .surah-card.learned .surah-number {
-  background: var(--green);
-  border-color: var(--green);
-  color: #fff;
+  color: var(--green);
 }
 .surah-card.partial {
-  border-color: #d9b45a;
-  background: #faf3df;
+  background: #fbf5e4;
+  border-color: #e6d29b;
 }
 .surah-card.partial .surah-number {
-  background: #b58a47;
-  border-color: #b58a47;
-  color: #fff;
+  color: #a8823c;
 }
-.surah-number {
+.memory-card .surah-number {
+  position: absolute;
+  top: 7px;
+  left: 10px;
+  font-size: 9px;
+  font-weight: 650;
+  color: #a9b3a1;
+  letter-spacing: 0.3px;
+}
+.surah-option .surah-number {
   display: grid;
   place-items: center;
   width: 34px;

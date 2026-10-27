@@ -175,5 +175,5 @@ test("coverage is explicit and unsupported surahs keep their existing behavior",
   await page.getByRole("button", { name: "Découpage", exact: true }).click();
   const ikhlas = page.getByRole("button", { name: /Al-Ikhlas/ });
   await expect(ikhlas).toBeDisabled();
-  await expect(ikhlas).toContainText("pas encore découpée");
+  await expect(ikhlas).toBeDisabled();
 });

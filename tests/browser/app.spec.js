@@ -109,7 +109,7 @@ test("partial memorization is editable, persisted and used by the cycle and stat
   const baqarahCard = page.getByRole("button", {
     name: /Al-Baqarah, versets 1 à 40 appris/,
   });
-  await expect(baqarahCard).toContainText("Versets 1 à 40 · en cours");
+  await expect(baqarahCard).toHaveClass(/partial/);
   await baqarahCard.click();
   await expect(page.getByRole("dialog")).toContainText("Surat Al-Baqarah");
   await expect(page.getByRole("radio", { name: /Une portion/ })).toBeChecked();
