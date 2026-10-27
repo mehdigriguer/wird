@@ -1348,24 +1348,18 @@ export default function App() {
   }
 
   function onLimit(prayer, limit) {
-    commit(
-      (s) => ({ ...s, limits: { ...s.limits, [prayer.id]: limit } }),
-      "Quantité mise à jour. Les passages déjà validés restent inchangés.",
-    );
+    commit((s) => ({ ...s, limits: { ...s.limits, [prayer.id]: limit } }));
   }
 
   // Plafond ajusté à la volée sur une carte : vaut pour aujourd'hui
   // seulement, les réglages redeviennent la référence dès demain.
   function onTodayLimit(prayer, limit) {
-    commit(
-      (s) => {
-        const limitOverrides = { ...s.day.limitOverrides };
-        if (limit === s.limits[prayer.id]) delete limitOverrides[prayer.id];
-        else limitOverrides[prayer.id] = limit;
-        return { ...s, day: { ...s.day, limitOverrides } };
-      },
-      "Plafond du jour mis à jour. Les passages déjà validés restent inchangés.",
-    );
+    commit((s) => {
+      const limitOverrides = { ...s.day.limitOverrides };
+      if (limit === s.limits[prayer.id]) delete limitOverrides[prayer.id];
+      else limitOverrides[prayer.id] = limit;
+      return { ...s, day: { ...s.day, limitOverrides } };
+    });
   }
 
   async function importFile(event) {
