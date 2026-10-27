@@ -19,6 +19,20 @@ import duhaSections from "./data/ad-duha-sections.json" with { type: "json" };
 import sharhSections from "./data/ash-sharh-sections.json" with { type: "json" };
 import tinSections from "./data/at-tin-sections.json" with { type: "json" };
 import alaqSections from "./data/al-alaq-sections.json" with { type: "json" };
+import qadrSections from "./data/al-qadr-sections.json" with { type: "json" };
+import takathurSections from "./data/at-takathur-sections.json" with { type: "json" };
+import asrSections from "./data/al-asr-sections.json" with { type: "json" };
+import humazahSections from "./data/al-humazah-sections.json" with { type: "json" };
+import filSections from "./data/al-fil-sections.json" with { type: "json" };
+import qurayshSections from "./data/quraysh-sections.json" with { type: "json" };
+import maunSections from "./data/al-maun-sections.json" with { type: "json" };
+import kawtharSections from "./data/al-kawthar-sections.json" with { type: "json" };
+import kafirunSections from "./data/al-kafirun-sections.json" with { type: "json" };
+import nasrSections from "./data/an-nasr-sections.json" with { type: "json" };
+import masadSections from "./data/al-masad-sections.json" with { type: "json" };
+import ikhlasSections from "./data/al-ikhlas-sections.json" with { type: "json" };
+import falaqSections from "./data/al-falaq-sections.json" with { type: "json" };
+import nasSections from "./data/an-nas-sections.json" with { type: "json" };
 
 export const LEGACY_SEGMENTATION_IDS = ["naziat-v1", "mulk-v1"];
 
@@ -44,6 +58,20 @@ export const SECTIONS = [
   sharhSections,
   tinSections,
   alaqSections,
+  qadrSections,
+  takathurSections,
+  asrSections,
+  humazahSections,
+  filSections,
+  qurayshSections,
+  maunSections,
+  kawtharSections,
+  kafirunSections,
+  nasrSections,
+  masadSections,
+  ikhlasSections,
+  falaqSections,
+  nasSections,
 ];
 export {
   kahfSections,
@@ -67,6 +95,20 @@ export {
   sharhSections,
   tinSections,
   alaqSections,
+  qadrSections,
+  takathurSections,
+  asrSections,
+  humazahSections,
+  filSections,
+  qurayshSections,
+  maunSections,
+  kawtharSections,
+  kafirunSections,
+  nasrSections,
+  masadSections,
+  ikhlasSections,
+  falaqSections,
+  nasSections,
 };
 
 export function sectionFor(surah, verse) {

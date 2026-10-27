@@ -173,7 +173,6 @@ test("coverage is explicit and unsupported surahs keep their existing behavior",
   await seed(page, updateKnown(fullState(localDate()), [112, 113, 114]));
   await expect(page.locator(".prayer-card").first()).toContainText("Al-Ikhlas");
   await page.getByRole("button", { name: "Découpage", exact: true }).click();
-  const ikhlas = page.getByRole("button", { name: /Al-Ikhlas/ });
-  await expect(ikhlas).toBeDisabled();
-  await expect(ikhlas).toBeDisabled();
+  const baqarah = page.getByRole("button", { name: /Al-Baqarah/ });
+  await expect(baqarah).toBeDisabled();
 });
