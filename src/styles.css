@@ -1260,6 +1260,7 @@ select {
   font-weight: 400;
   color: #223f31;
   line-height: 1.1;
+  white-space: nowrap;
 }
 .progress-stats em {
   font-style: normal;
@@ -2193,32 +2194,32 @@ dialog::backdrop {
     margin-bottom: 18px;
   }
   .progress-block.panel {
-    gap: 12px;
-    padding: 16px 12px;
+    gap: 14px;
+    padding: 18px 14px;
   }
   .progress-frame {
-    width: 96px;
-    height: 56px;
+    width: 112px;
+    height: 66px;
   }
   .progress-big {
-    font-size: 16px;
+    font-size: 19px;
   }
   .progress-big small {
-    font-size: 10px;
+    font-size: 11px;
   }
   .progress-label {
-    font-size: 8px;
+    font-size: 9px;
   }
   .progress-stats {
     flex: 1;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px 4px;
+    gap: 8px 6px;
   }
   .progress-stats b {
-    font-size: 14px;
+    font-size: 17px;
   }
   .progress-stats em {
-    font-size: 8px;
+    font-size: 9px;
     white-space: normal;
   }
   .settings-panel {
