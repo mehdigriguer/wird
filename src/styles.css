@@ -1172,6 +1172,9 @@ select {
   font-size: 12px;
   margin-top: 7px;
 }
+.memory-heading {
+  margin-bottom: 14px;
+}
 .memory-heading h1 {
   font-family: var(--serif);
   font-size: clamp(32px, 3.2vw, 44px);
