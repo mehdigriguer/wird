@@ -108,6 +108,14 @@ export function validateState(value, chapters) {
   )
     fail();
   const ids = new Set(PRAYERS.map((p) => p.id));
+  if (value.day.limitOverrides === undefined)
+    value.day = { ...value.day, limitOverrides: {} };
+  else {
+    if (!object(value.day.limitOverrides)) fail();
+    for (const [id, limit] of Object.entries(value.day.limitOverrides)) {
+      if (!ids.has(id) || ![0.25, 0.5, 1].includes(limit)) fail();
+    }
+  }
   for (const extra of value.day.extras) {
     if (
       !object(extra) ||

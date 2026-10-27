@@ -530,3 +530,51 @@ test("a cycle ending mid-prayer frees the remaining rakaat with a dedicated note
   // le cycle 2 reprend à la prière suivante
   await expect(cards.nth(2)).toContainText("Al-Ikhlas");
 });
+
+test("the per-prayer limit chip cycles, replans and hides once validated", async ({
+  page,
+}) => {
+  await seed(
+    page,
+    updateKnown(fullState(localDate()), [67], { 67: { from: 20, to: 30 } }),
+  );
+  const fajr = page.locator(".prayer-card").first();
+  const chip = fajr.getByRole("button", { name: /Plafond Fajr/ });
+  await expect(chip).toContainText("1 page");
+  await expect(fajr).toContainText("v. 20–30");
+  // à ¼ page, Al-Mulk ne tient plus dans la prière : elle est reportée
+  await chip.click();
+  await expect(chip).toContainText("¼ page");
+  await expect(fajr).toContainText("Prière libre : Al-Mulk attend");
+  let state = await stored(page);
+  expect(state.day.limitOverrides.fajr).toBe(0.25);
+  expect(state.limits.fajr).toBe(1);
+  // à ½ page, elle tient en 2 rakaat coupées
+  await chip.click();
+  await expect(chip).toContainText("½ page");
+  await expect(fajr).not.toContainText("Prière libre");
+  await expect(fajr).toContainText("v. 20–");
+  await expect(fajr).not.toContainText("v. 20–30");
+  state = await stored(page);
+  expect(state.day.limitOverrides.fajr).toBe(0.5);
+  expect(state.limits.fajr).toBe(1);
+  // revenir au défaut des réglages efface l'ajustement du jour
+  await chip.click();
+  await expect(chip).toContainText("1 page");
+  await expect(fajr).toContainText("v. 20–30");
+  state = await stored(page);
+  expect(state.day.limitOverrides).toEqual({});
+  // une fois la prière validée, le chip disparaît
+  await page
+    .getByRole("button", { name: "J’ai prié avec ces versets" })
+    .click();
+  await expect(
+    fajr.getByRole("button", { name: /Plafond Fajr/ }),
+  ).toHaveCount(0);
+  // les prières suivantes gardent leur chip
+  await expect(
+    page.locator(".prayer-card").nth(1).getByRole("button", {
+      name: /Plafond Subh/,
+    }),
+  ).toBeVisible();
+});

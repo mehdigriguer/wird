@@ -893,10 +893,12 @@ function PrayerCard({
   overrides,
   onOverride,
   onUndo,
+  onLimit,
 }) {
   const done = prayer.result?.status === "done";
   const skipped = prayer.result?.status === "skipped";
   const valid = prayer.passages.some((p) => p && !p.blocked);
+  const nextLimit = { 0.25: 0.5, 0.5: 1, 1: 0.25 }[prayer.limit];
   const deferredName = prayer.deferred
     ? chapters[prayer.deferred - 1].name
     : "la sourate suivante";
@@ -912,7 +914,29 @@ function PrayerCard({
         </div>
         <div className="prayer-title">
           <h3>{prayer.name}</h3>
-          {prayer.detail && <p>{prayer.detail}</p>}
+          {(prayer.detail || (!done && !skipped && !prayer.extra)) && (
+            <p>
+              {prayer.detail}
+              {!done && !skipped && !prayer.extra && (
+                <>
+                  {prayer.detail ? " · " : ""}
+                  <button
+                    type="button"
+                    className={`limit-chip ${prayer.customLimit ? "custom" : ""}`}
+                    aria-label={`Plafond ${prayer.name} : ${pageLabel(prayer.limit)}${prayer.customLimit ? " (aujourd’hui seulement)" : ""}. Cliquer pour passer à ${pageLabel(nextLimit)}`}
+                    title={
+                      prayer.customLimit
+                        ? "Plafond ajusté pour aujourd’hui seulement"
+                        : undefined
+                    }
+                    onClick={() => onLimit(prayer, nextLimit)}
+                  >
+                    max {pageLabel(prayer.limit)} par rakaat
+                  </button>
+                </>
+              )}
+            </p>
+          )}
         </div>
         <span className={`status ${done ? "complete" : ""}`}>
           {done ? (
@@ -1240,6 +1264,20 @@ export default function App() {
     );
   }
 
+  // Plafond ajusté à la volée sur une carte : vaut pour aujourd'hui
+  // seulement, les réglages redeviennent la référence dès demain.
+  function onTodayLimit(prayer, limit) {
+    commit(
+      (s) => {
+        const limitOverrides = { ...s.day.limitOverrides };
+        if (limit === s.limits[prayer.id]) delete limitOverrides[prayer.id];
+        else limitOverrides[prayer.id] = limit;
+        return { ...s, day: { ...s.day, limitOverrides } };
+      },
+      "Plafond du jour mis à jour. Les passages déjà validés restent inchangés.",
+    );
+  }
+
   async function importFile(event) {
     const file = event.target.files?.[0];
     event.target.value = "";
@@ -1562,6 +1600,7 @@ export default function App() {
                                 ? () => commit(undoLast)
                                 : undefined
                             }
+                            onLimit={onTodayLimit}
                             onRemove={(id) =>
                               commit((s) => ({
                                 ...s,

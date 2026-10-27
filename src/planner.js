@@ -135,14 +135,17 @@ export function newState(date = localDate()) {
       witr: true,
       qiyam: false,
     },
-    day: { date, extras: [], results: {} },
+    day: { date, extras: [], results: {}, limitOverrides: {} },
     history: [],
   };
 }
 
 export function rollover(state, date = localDate()) {
   if (state.day.date === date) return state;
-  return { ...state, day: { date, extras: [], results: {} } };
+  return {
+    ...state,
+    day: { date, extras: [], results: {}, limitOverrides: {} },
+  };
 }
 
 export function knownRange(chapter, ranges = {}) {
@@ -264,6 +267,9 @@ export function buildCorpus(chapters, known, ranges = {}) {
 
 export function dailyPrayers(state, extras = state.day.extras) {
   const enabled = state.prayersEnabled ?? {};
+  // Plafonds ajustés à la volée pour aujourd'hui seulement : le rollover
+  // les efface et les réglages redeviennent la référence dès demain.
+  const overrides = state.day.limitOverrides ?? {};
   const asExtra = (extra) => ({
     ...extra,
     detail: `${extra.rakaat} rakaat supplémentaires · aujourd’hui`,
@@ -275,7 +281,11 @@ export function dailyPrayers(state, extras = state.day.extras) {
     ...PRAYERS.filter(
       (prayer) => !prayer.optional || enabled[prayer.id] === true,
     ).flatMap((prayer) => [
-      { ...prayer, limit: state.limits[prayer.id] },
+      {
+        ...prayer,
+        limit: overrides[prayer.id] ?? state.limits[prayer.id],
+        customLimit: prayer.id in overrides,
+      },
       ...extras.filter((extra) => extra.after === prayer.id).map(asExtra),
     ]),
   ];
@@ -602,7 +612,10 @@ export function forecast(state, corpus, includeExtras = true) {
     includeExtras ? state.day.extras : [],
   ).filter((p) => !state.day.results[p.id]);
   const scheduleLimit = maxScheduleLimit(state);
-  const regular = dailyPrayers(state, []);
+  const regular = dailyPrayers(
+    { ...state, day: { ...state.day, limitOverrides: {} } },
+    [],
+  );
   for (let day = 0; day <= corpus.length + 1; day++) {
     const before = cursor;
     for (const prayer of day === 0 ? today : regular) {

@@ -315,6 +315,39 @@ test("undo restores progress even across a completed cycle", () => {
   assert.deepEqual(undoLast(skipped), state);
 });
 
+test("today's limit override replans the day and vanishes tomorrow", () => {
+  const state = stateFor([67], { 67: { from: 20, to: 30 } });
+  const corpus = corpusFor(state.known, state.ranges);
+  const defaultPlan = planDay(state, corpus)[0];
+  assert.deepEqual(
+    defaultPlan.passages.map((p) => [p.from, p.to]),
+    [[20, 30]],
+  );
+  const overridden = {
+    ...state,
+    day: { ...state.day, limitOverrides: { fajr: 0.5 } },
+  };
+  const fajr = planDay(overridden, corpus)[0];
+  assert.equal(fajr.limit, 0.5);
+  assert.ok(fajr.customLimit);
+  assert.equal(fajr.passages[0].from, 20);
+  assert.ok(fajr.passages[0].to < 30);
+  // le réglage par défaut n'a pas bougé
+  assert.equal(overridden.limits.fajr, 1);
+  const tomorrow = planDay(rollover(overridden, "2026-10-06"), corpus)[0];
+  assert.equal(tomorrow.limit, 1);
+  assert.ok(!tomorrow.customLimit);
+  assert.deepEqual(
+    tomorrow.passages.map((p) => [p.from, p.to]),
+    [[20, 30]],
+  );
+  // les sauvegardes d'avant la fonctionnalité restent valides
+  const legacy = clone(state);
+  delete legacy.day.limitOverrides;
+  const parsed = parseBackup(JSON.stringify(legacy), chapters);
+  assert.deepEqual(parsed.day.limitOverrides, {});
+});
+
 test("midnight uses local calendar, discards daily extras, never validates by itself", () => {
   const state = stateFor([2]);
   state.day.extras = [extra];
@@ -327,6 +360,7 @@ test("midnight uses local calendar, discards daily extras, never validates by it
     date: "2026-10-06",
     extras: [],
     results: {},
+    limitOverrides: {},
   });
   assert.equal(tomorrow.history.length, 1);
   assert.equal(canUndo(tomorrow), false);

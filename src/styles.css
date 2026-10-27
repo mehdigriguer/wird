@@ -617,6 +617,28 @@ main {
   color: var(--muted);
   margin: 0;
 }
+.limit-chip {
+  border: 1px solid #dfe6d6;
+  background: transparent;
+  color: var(--green);
+  font: inherit;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0 6px;
+  margin-left: 1px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.limit-chip:hover {
+  background: #eef3e6;
+  border-color: #c9d8b8;
+}
+.limit-chip.custom {
+  background: #e7efe0;
+  border-color: #b8cba4;
+}
 .status {
   display: flex;
   align-items: center;
