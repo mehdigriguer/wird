@@ -13,6 +13,7 @@ import alaSections from "./data/al-ala-sections.json" with { type: "json" };
 import ghashiyahSections from "./data/al-ghashiyah-sections.json" with { type: "json" };
 import fajrSections from "./data/al-fajr-sections.json" with { type: "json" };
 import baladSections from "./data/al-balad-sections.json" with { type: "json" };
+import shamsSections from "./data/ash-shams-sections.json" with { type: "json" };
 
 export const LEGACY_SEGMENTATION_IDS = ["naziat-v1", "mulk-v1"];
 
@@ -32,6 +33,7 @@ export const SECTIONS = [
   ghashiyahSections,
   fajrSections,
   baladSections,
+  shamsSections,
 ];
 export {
   kahfSections,
@@ -49,6 +51,7 @@ export {
   ghashiyahSections,
   fajrSections,
   baladSections,
+  shamsSections,
 };
 
 export function sectionFor(surah, verse) {
