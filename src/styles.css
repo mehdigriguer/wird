@@ -1293,9 +1293,20 @@ select {
     transform 0.15s;
 }
 .surah-card:hover:not(:disabled) {
-  border-color: #a7bc9a;
   box-shadow: 0 3px 12px #17382d16;
   transform: translateY(-1px);
+}
+.surah-card.greyed:hover:not(:disabled) {
+  background: #e8ece2;
+  border-color: #b9c2ac;
+}
+.surah-card.learned:hover:not(:disabled) {
+  background: #d9e9c8;
+  border-color: #8fae7c;
+}
+.surah-card.partial:hover:not(:disabled) {
+  background: #f5e3b4;
+  border-color: #d4ab55;
 }
 .surah-card.greyed {
   opacity: 0.5;
