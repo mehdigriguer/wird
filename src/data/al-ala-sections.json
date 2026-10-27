@@ -33,12 +33,12 @@
     {
       "from": 1,
       "to": 7,
-      "title": "La louange du Créateur et la révélation récitée au Prophète"
+      "title": "La louange du Créateur et la révélation"
     },
     {
       "from": 8,
       "to": 19,
-      "title": "La facilité et le rappel, le craintif et le malheureux, le succès du purifié et les feuillets premiers"
+      "title": "Le rappel, le craintif, le malheureux et les feuillets premiers"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

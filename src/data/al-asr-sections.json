@@ -33,7 +33,7 @@
     {
       "from": 1,
       "to": 3,
-      "title": "Le serment par le temps, la perdition de l’homme et l’exception des croyants endurants"
+      "title": "Le serment par le temps et la perdition de l’homme"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

@@ -33,7 +33,7 @@
     {
       "from": 1,
       "to": 5,
-      "title": "Le récit des gens de l’éléphant et leur ruse renvoyée contre eux"
+      "title": "Les gens de l’éléphant"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

@@ -33,7 +33,7 @@
     {
       "from": 1,
       "to": 5,
-      "title": "Les bouleversements cosmiques du Jour du Jugement"
+      "title": "Le ciel fendu et la terre étendue"
     },
     {
       "from": 6,
@@ -43,7 +43,7 @@
     {
       "from": 16,
       "to": 25,
-      "title": "Le serment par le crépuscule, la nuit et la lune, le refus de croire et l’annonce du châtiment"
+      "title": "Le serment par le crépuscule, le refus de croire et le châtiment"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

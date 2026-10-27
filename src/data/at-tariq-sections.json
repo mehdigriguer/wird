@@ -33,12 +33,12 @@
     {
       "from": 1,
       "to": 10,
-      "title": "Le serment par l’astre nocturne, la garde de chaque âme, la création de l’homme et le Jour de l’épreuve des secrets"
+      "title": "L’astre nocturne, la création de l’homme et le Jour des secrets"
     },
     {
       "from": 11,
       "to": 17,
-      "title": "Le serment par le ciel et la terre, la parole décisive et la ruse des mécréants"
+      "title": "La parole décisive et la ruse des mécréants"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

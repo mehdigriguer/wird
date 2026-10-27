@@ -33,12 +33,12 @@
     {
       "from": 1,
       "to": 11,
-      "title": "Le serment, le récit des gens du fossé, le châtiment des persécuteurs et la récompense des croyants"
+      "title": "Les gens du fossé : châtiment des persécuteurs, récompense des croyants"
     },
     {
       "from": 12,
       "to": 22,
-      "title": "La puissance d’Allah, le récit des armées de Pharaon et de Thamud, et le Coran préservé"
+      "title": "La puissance d’Allah, Pharaon et Thamud, le Coran préservé"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

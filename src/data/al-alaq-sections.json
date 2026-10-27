@@ -33,12 +33,12 @@
     {
       "from": 1,
       "to": 5,
-      "title": "La première révélation : lis au nom de ton Seigneur, la création et l’enseignement par le calame"
+      "title": "La première révélation"
     },
     {
       "from": 6,
       "to": 19,
-      "title": "La transgression de l’homme, celui qui interdit la prière, et l’injonction de se prosterner"
+      "title": "La transgression de l’homme et l’injonction de se prosterner"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

@@ -33,12 +33,12 @@
     {
       "from": 1,
       "to": 11,
-      "title": "Les serments et les deux voies : celui qui donne et craint Allah, et l’avare qui dément"
+      "title": "Les deux voies : le donneur et l’avare"
     },
     {
       "from": 12,
       "to": 21,
-      "title": "La guidée, l’avertissement du Feu et le pieux qui donne par recherche de la Face de son Seigneur"
+      "title": "L’avertissement du Feu et le pieux"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

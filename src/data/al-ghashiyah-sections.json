@@ -33,17 +33,17 @@
     {
       "from": 1,
       "to": 7,
-      "title": "L’annonce du Jour et le sort des humiliés : feu ardent, source bouillante et nourriture de dhari’"
+      "title": "Le sort des humiliés"
     },
     {
       "from": 8,
       "to": 16,
-      "title": "Le sort des joyeux dans le jardin élevé : source qui coule, couches, coupes, coussins et tapis"
+      "title": "Le sort des joyeux dans le jardin élevé"
     },
     {
       "from": 17,
       "to": 26,
-      "title": "Les signes de la création, le commandement de rappeler et le compte final"
+      "title": "Les signes de la création et le compte final"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

@@ -33,7 +33,7 @@
     {
       "from": 1,
       "to": 3,
-      "title": "La victoire et la conquête, l’entrée des foules dans la religion, et la glorification du Seigneur"
+      "title": "La victoire et l’entrée des foules dans la religion"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

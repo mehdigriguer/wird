@@ -33,17 +33,17 @@
     {
       "from": 1,
       "to": 14,
-      "title": "Les serments et le châtiment des peuples injustes : 'Aad, Thamud et Pharaon"
+      "title": "Les serments et le châtiment des peuples injustes"
     },
     {
       "from": 15,
       "to": 20,
-      "title": "L’épreuve de l’homme et le reproche : l’orphelin, le pauvre, l’héritage et l’amour des biens"
+      "title": "L’épreuve de l’homme et le reproche"
     },
     {
       "from": 21,
       "to": 30,
-      "title": "Le Jour du Jugement, le regret de l’homme et l’âme apaisée appelée au jardin"
+      "title": "Le Jour du Jugement et l’âme apaisée"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

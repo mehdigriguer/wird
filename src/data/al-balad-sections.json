@@ -33,12 +33,12 @@
     {
       "from": 1,
       "to": 7,
-      "title": "Le serment par la cité, l’homme créé dans la peine et son arrogance"
+      "title": "Le serment par la cité et l’arrogance de l’homme"
     },
     {
       "from": 8,
       "to": 20,
-      "title": "La réponse d’Allah, la voie ardue et les deux groupes du Jugement"
+      "title": "La voie ardue et les deux groupes du Jugement"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",

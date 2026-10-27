@@ -33,12 +33,12 @@
     {
       "from": 1,
       "to": 8,
-      "title": "La consolation du Prophète : les serments, l’absence d’abandon et les bienfaits passés"
+      "title": "La consolation du Prophète et les bienfaits passés"
     },
     {
       "from": 9,
       "to": 11,
-      "title": "Les commandements qui en découlent : l’orphelin, le demandeur et le récit du bienfait"
+      "title": "Les commandements : l’orphelin, le demandeur, le bienfait"
     }
   ],
   "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
