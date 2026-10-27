@@ -1028,35 +1028,6 @@ function PrayerCard({
   );
 }
 
-function MemoryToolbar({ filter, onFilter, desc, onToggle }) {
-  const options = [
-    ["all", "Toutes"],
-    ["learned", "Entières"],
-    ["partial", "En cours"],
-    ["none", "Pas apprises"],
-  ];
-  return (
-    <div className="sort-row">
-      <div className="segmented" role="group" aria-label="Filtrer les sourates">
-        {options.map(([id, label]) => (
-          <button
-            key={id}
-            type="button"
-            className={filter === id ? "selected" : ""}
-            aria-pressed={filter === id}
-            onClick={() => onFilter(id)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      <button className="text-button sort-toggle" onClick={onToggle}>
-        Ordre : {desc ? "114 → 1" : "1 → 114"}
-      </button>
-    </div>
-  );
-}
-
 function ForecastText({ estimate }) {
   if (!estimate) return <>À définir</>;
   if (estimate.blocked) return <>À ajuster</>;
@@ -1078,9 +1049,6 @@ export default function App() {
   const [view, setView] = useState("today");
   const [editingSurah, setEditingSurah] = useState(null);
   const [sectionsSurah, setSectionsSurah] = useState(null);
-  const [sortDesc, setSortDesc] = useState(false);
-  const [memoryFilter, setMemoryFilter] = useState("all");
-  const orderedChapters = sortDesc ? [...chapters].reverse() : chapters;
   const [modal, setModal] = useState(null);
   const lastRaw = useRef(initial.raw);
   const importRef = useRef(null);
@@ -1705,27 +1673,8 @@ export default function App() {
                       </div>
                     </div>
                   </section>
-                  <MemoryToolbar
-                    filter={memoryFilter}
-                    onFilter={setMemoryFilter}
-                    desc={sortDesc}
-                    onToggle={() => setSortDesc((d) => !d)}
-                  />
                   <div className="memory-grid">
-                    {orderedChapters
-                      .filter((c) => {
-                        if (memoryFilter === "all") return true;
-                        const known = state.known.includes(c.id);
-                        const complete =
-                          known &&
-                          knownRange(c, state.ranges).from === 1 &&
-                          knownRange(c, state.ranges).to === c.verses.length;
-                        if (memoryFilter === "learned") return complete;
-                        if (memoryFilter === "partial")
-                          return known && !complete;
-                        return !known;
-                      })
-                      .map((c) => {
+                    {chapters.map((c) => {
                         const known = state.known.includes(c.id);
                         const range = knownRange(c, state.ranges);
                         const complete =
@@ -1774,7 +1723,7 @@ export default function App() {
                 <>
                   <PageHeading title="Découpage thématique." />
                   <div className="memory-grid">
-                    {orderedChapters.map((c) => {
+                    {chapters.map((c) => {
                       const sections = sectionsForSurah(c.id);
                       return (
                         <button
