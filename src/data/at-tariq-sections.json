@@ -1,0 +1,69 @@
+{
+  "id": "tariq-v1",
+  "surah": 86,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage fourni par l’utilisateur",
+  "tafsirApiUnreliable": false,
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/86:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/86:",
+      "note": "L’API by_ayah retourne les groupes complets 1–10 et 11–17, alignés avec la coupure QSU au verset 10."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 10,
+      "title": "Le serment par l’astre nocturne, la garde de chaque âme, la création de l’homme et le Jour de l’épreuve des secrets"
+    },
+    {
+      "from": 11,
+      "to": 17,
+      "title": "Le serment par le ciel et la terre, la parole décisive et la ruse des mécréants"
+    }
+  ],
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      4,
+      5,
+      7,
+      8,
+      10,
+      14,
+      17
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 10,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/86:1"
+      },
+      {
+        "from": 11,
+        "to": 17,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/86:11"
+      }
+    ]
+  },
+  "retrievedAt": "2026-10-27T13:11:44.787451+00:00"
+}
