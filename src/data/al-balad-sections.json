@@ -1,0 +1,72 @@
+{
+  "id": "balad-v1",
+  "surah": 90,
+  "status": "source-backed-prototype",
+  "themesSource": "Découpage fourni par l’utilisateur",
+  "tafsirApiUnreliable": false,
+  "sources": {
+    "qsu": {
+      "title": "QSU: Quran Semantic Units Dataset, version 1",
+      "authors": [
+        "Abdelraouf Abdelmonem Hawash",
+        "Tamer Medhat",
+        "Mahmoud Shams",
+        "Nora Mahmoud"
+      ],
+      "url": "https://data.mendeley.com/datasets/v7hyhk7krd/1",
+      "doi": "10.17632/v7hyhk7krd.1",
+      "license": "CC BY-NC 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "file": "WBS.csv",
+      "downloadUrl": "https://data.mendeley.com/public-files/datasets/v7hyhk7krd/files/ce0efff7-bbc6-43e8-96bd-f57bcd34c986/file_downloaded",
+      "sha256": "fbc2ae6ef67b2ceb927442035174fd2baafaf66d0c088ec221e7d7e171fd3637"
+    },
+    "tafsir": {
+      "title": "Ibn Kathir (Abridged), Quran.com",
+      "resourceId": 169,
+      "url": "https://quran.com/90:1/tafsirs/en-tafisr-ibn-kathir",
+      "apiBase": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/90:",
+      "note": "Ibn Kathir groupe 1–10 et 11–20, mais QSU marque le verset 10 en état ambigu. La coupure 7/8 est confirmée par QSU (fin d’unité au verset 7, reprise au verset 8)."
+    }
+  },
+  "blocks": [
+    {
+      "from": 1,
+      "to": 7,
+      "title": "Le serment par la cité, l’homme créé dans la peine et son arrogance"
+    },
+    {
+      "from": 8,
+      "to": 20,
+      "title": "La réponse d’Allah, la voie ardue et les deux groupes du Jugement"
+    }
+  ],
+  "method": "Theme ends are retained only when QSU marks a whole-verse stop and restart. Inside a theme, the planner fills by length and never mixes two themes in one rakaat. This is a source-backed planning prototype, not a religious certification.",
+  "evidence": {
+    "qsuWholeVerseEnds": [
+      4,
+      5,
+      6,
+      7,
+      12,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "tafsirGroups": [
+      {
+        "from": 1,
+        "to": 10,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/90:1"
+      },
+      {
+        "from": 11,
+        "to": 20,
+        "url": "https://api.quran.com/api/v4/tafsirs/169/by_ayah/90:11"
+      }
+    ]
+  },
+  "retrievedAt": "2026-10-27T13:39:37.347828+00:00"
+}
