@@ -171,7 +171,11 @@ test("invalid portions cannot be saved, even when hidden by the search", async (
   await expect(save).toBeEnabled();
   await save.click();
   expect((await stored(page)).ranges).toEqual({ 2: { from: 30, to: 40 } });
-  await expect(page.locator(".prayer-card").first()).toContainText("v. 30");
+  // la portion tient dans une prière à 1 page : elle attend Dhuhr entière
+  await expect(page.locator(".prayer-card").first()).toContainText(
+    "Prière libre",
+  );
+  await expect(page.locator(".prayer-card").nth(2)).toContainText("v. 30");
 });
 
 test("legacy local data and exports keep their whole surahs and revision progress", async ({

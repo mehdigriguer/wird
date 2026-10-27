@@ -1,4 +1,5 @@
 import {
+  DEFAULT_LIMITS,
   PRAYERS,
   buildCorpus,
   isValidRange,
@@ -94,7 +95,7 @@ export function validateState(value, chapters) {
   if (!object(value.limits)) fail();
   const limits = {};
   for (const p of PRAYERS) {
-    const limit = value.limits[p.id] ?? 0.5;
+    const limit = value.limits[p.id] ?? DEFAULT_LIMITS[p.id];
     if (![0.25, 0.5, 1].includes(limit)) fail();
     limits[p.id] = limit;
   }

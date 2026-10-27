@@ -115,6 +115,10 @@ export function localDate(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
+export const DEFAULT_LIMITS = Object.fromEntries(
+  PRAYERS.map((p) => [p.id, ["dhuhr", "asr", "isha"].includes(p.id) ? 1 : 0.5]),
+);
+
 export function newState(date = localDate()) {
   return {
     version: 2,
@@ -123,7 +127,7 @@ export function newState(date = localDate()) {
     cursor: 0,
     cycles: 0,
     epoch: 0,
-    limits: Object.fromEntries(PRAYERS.map((p) => [p.id, 0.5])),
+    limits: { ...DEFAULT_LIMITS },
     prayersEnabled: {
       fajr: true,
       duha: false,
@@ -418,7 +422,7 @@ function maxScheduleLimit(state) {
   const enabled = state.prayersEnabled ?? {};
   const limits = PRAYERS.filter(
     (p) => p.rakaat >= 2 && (!p.optional || enabled[p.id] === true),
-  ).map((p) => state.limits[p.id] ?? 0.5);
+  ).map((p) => state.limits[p.id] ?? DEFAULT_LIMITS[p.id]);
   return limits.length ? Math.max(...limits) : 0;
 }
 

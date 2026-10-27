@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import data from "../src/data/quran.json" with { type: "json" };
 import {
+  DEFAULT_LIMITS,
   PRAYERS,
   buildCorpus,
   canUndo,
@@ -75,7 +76,8 @@ test("the default program is the obligatory five plus fajr and witr", () => {
     dailyPrayers(state).reduce((n, p) => n + p.rakaat, 0),
     13,
   );
-  for (const p of dailyPrayers(state)) assert.equal(p.limit, 0.5);
+  for (const p of dailyPrayers(state))
+    assert.equal(p.limit, DEFAULT_LIMITS[p.id]);
   assert.deepEqual(state.prayersEnabled, {
     fajr: true,
     duha: false,
@@ -909,4 +911,12 @@ test("juz coverage follows the learned verses, split at juz limits", () => {
     ),
     30,
   );
+});
+
+test("default limits are half a page except Dhuhr, Asr and Isha", () => {
+  const { limits } = newState("2026-10-05");
+  for (const p of PRAYERS) {
+    const expected = ["dhuhr", "asr", "isha"].includes(p.id) ? 1 : 0.5;
+    assert.equal(limits[p.id], expected, p.id);
+  }
 });
