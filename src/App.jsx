@@ -897,6 +897,9 @@ function PrayerCard({
   const done = prayer.result?.status === "done";
   const skipped = prayer.result?.status === "skipped";
   const valid = prayer.passages.some((p) => p && !p.blocked);
+  const deferredName = prayer.deferred
+    ? chapters[prayer.deferred - 1].name
+    : "la sourate suivante";
   return (
     <article
       id={active ? "next-prayer" : undefined}
@@ -927,8 +930,8 @@ function PrayerCard({
       </div>
       {!skipped && prayer.passages.length === 0 && (
         <p className="defer-note">
-          Prière libre : la sourate suivante attend la prochaine prière pour
-          être faite en 1 seule prière.
+          Prière libre : {deferredName} attend la prochaine prière pour être
+          faite en 1 seule prière.
         </p>
       )}
       {!skipped && prayer.passages.length > 0 && (
@@ -965,7 +968,7 @@ function PrayerCard({
             <span className="rakaat-number">{prayer.passages.length + 1}</span>
             {prayer.cycleEnd
               ? "Rakaat libre : on vient de finir un cycle."
-              : "Rakaat libre : la sourate suivante attend la prochaine prière pour être faite en 1 seule prière."}
+              : `Rakaat libre : ${deferredName} attend la prochaine prière pour être faite en 1 seule prière.`}
           </p>
         )}
       {skipped && (

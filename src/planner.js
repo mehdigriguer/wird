@@ -422,6 +422,7 @@ export function planPrayer(
 ) {
   const passages = [];
   let cycleEnd = false;
+  let deferred = null;
   for (let i = 0; i < prayer.rakaat; i++) {
     // Une sourate qui tient dans une prière complète de 2 rakaat à la limite
     // la plus haute du programme est atomique : si elle ne peut pas finir
@@ -439,8 +440,10 @@ export function planPrayer(
         prayer.rakaat - i,
       ) &&
       completesInSlots(corpus, cursor, cycles, scheduleLimit, 2)
-    )
+    ) {
+      deferred = corpus[cursor].surah;
       break;
+    }
     let next = takePassage(corpus, cursor, cycles, prayer.limit);
     if (overrides[i] != null && next.passage && !next.passage.blocked) {
       next = applyOverride(corpus, cursor, cycles, next.passage, overrides[i]);
@@ -456,7 +459,7 @@ export function planPrayer(
       break;
     }
   }
-  return { passages, cursor, cycles, cycleEnd };
+  return { passages, cursor, cycles, cycleEnd, deferred };
 }
 
 export function planDay(state, corpus, activeOverrides = {}) {
@@ -471,6 +474,7 @@ export function planDay(state, corpus, activeOverrides = {}) {
         result,
         passages: result.passages,
         ...(result.cycleEnd ? { cycleEnd: true } : {}),
+        ...(result.deferred ? { deferred: result.deferred } : {}),
       };
     const next = planPrayer(
       corpus,
@@ -487,6 +491,7 @@ export function planDay(state, corpus, activeOverrides = {}) {
       ...prayer,
       passages: next.passages,
       ...(next.cycleEnd ? { cycleEnd: true } : {}),
+      ...(next.deferred ? { deferred: next.deferred } : {}),
     };
   });
 }
@@ -523,6 +528,7 @@ export function recordPrayer(state, corpus, prayerId, status, overrides = {}) {
     status,
     passages: status === "done" ? next.passages : [],
     ...(status === "done" && next.cycleEnd ? { cycleEnd: true } : {}),
+    ...(status === "done" && next.deferred ? { deferred: next.deferred } : {}),
   };
   return {
     ...state,

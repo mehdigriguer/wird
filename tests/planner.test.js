@@ -730,8 +730,11 @@ test("a surah that fits one prayer at the schedule's highest limit stays whole",
   const span = (p) =>
     p.passages.filter(Boolean).map((x) => `${x.surah}:${x.from}-${x.to}`);
   assert.deepEqual(byId.fajr.passages, []);
+  assert.equal(byId.fajr.deferred, 79);
   assert.deepEqual(byId.subh.passages, []);
+  assert.equal(byId.subh.deferred, 79);
   assert.deepEqual(span(byId.dhuhr), ["79:1-26", "79:27-46"]);
+  assert.ok(!byId.dhuhr.deferred);
 });
 
 test("a surah no prayer can hold whole is placed split instead of blocking", () => {
@@ -785,6 +788,7 @@ test("a surah that fits one prayer never straddles two prayers", () => {
     p.passages.filter(Boolean).map((x) => `${x.surah}:${x.from}-${x.to}`);
   // Al-Mutaffifin ne tient pas dans la fin de Maghreb : reportée, r2 vide
   assert.deepEqual(span(byId.maghrib), ["82:1-19"]);
+  assert.equal(byId.maghrib.deferred, 83);
   // Isha la contient entière
   assert.deepEqual(span(byId.isha), ["83:1-28", "83:29-36"]);
   // Chafaa contient Al-Mulk entier
