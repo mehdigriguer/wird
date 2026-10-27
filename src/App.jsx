@@ -1261,13 +1261,6 @@ export default function App() {
     }
   }
 
-  const heading = {
-    today: "Aujourd’hui",
-    memory: "Mémorisation",
-    sections: "Découpage",
-    infos: "Informations",
-    settings: "Réglages",
-  }[view];
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
@@ -1321,17 +1314,11 @@ export default function App() {
       </aside>
       <div className="main-shell">
         <header className="topbar">
-          <div className="breadcrumb">
-            Mon espace <span>/</span> <strong>{heading}</strong>
-          </div>
           <span className="date-label">
             {new Date(`${state.day.date}T12:00:00`).toLocaleDateString(
               "fr-FR",
               { weekday: "long", day: "numeric", month: "long" },
             )}
-          </span>
-          <span className="device-badge">
-            <span /> Sur cet appareil
           </span>
         </header>
         <main id="main" tabIndex="-1">
