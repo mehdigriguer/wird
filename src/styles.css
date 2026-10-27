@@ -936,16 +936,16 @@ select {
   background: transparent;
   color: var(--green);
   font-size: 13px;
-  width: 32px;
+  width: 24px;
   min-height: 26px;
 }
 .stepper button:hover:not(:disabled) {
   background: #e2e9d8;
 }
 .stepper input {
-  width: 44px;
+  width: 30px;
   border: 0;
-  background: #fffefa;
+  background: transparent;
   text-align: center;
   font-size: 13px;
   color: var(--deep);
