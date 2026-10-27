@@ -41,7 +41,7 @@ test("onboarding, exact passages, real validation, undo and reload", async ({
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Tout commence par ce que tu connais." }),
+    page.getByRole("heading", { name: "Un peu chaque jour" }),
   ).toBeVisible();
   await chooseSurahs(page);
   await enableOptionalPrayers(page);
@@ -581,4 +581,28 @@ test("the per-prayer limit chip cycles, replans and hides once validated", async
       name: /Plafond Subh/,
     }),
   ).toBeVisible();
+});
+
+test("welcome presets start a first cycle in one click", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("button", { name: "Juz 30 complet" })).toBeVisible();
+  await page.getByRole("button", { name: "Juz 30 complet" }).click();
+  const state = await stored(page);
+  expect(state.known).toHaveLength(37);
+  expect(state.known[0]).toBe(78);
+  expect(state.known.at(-1)).toBe(114);
+  // An-Naba est atomique : elle attend Dhuhr, première prière à 1 page
+  await expect(page.locator(".prayer-card").first()).toContainText(
+    "Prière libre : An-Naba attend",
+  );
+  await expect(page.locator(".prayer-card").nth(2)).toContainText("An-Naba");
+});
+
+test("the Fatiha + Qul preset skips Fatiha in the cycle but counts it", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Al-Fatiha + les Qul" }).click();
+  expect((await stored(page)).known).toEqual([1, 112, 113, 114]);
+  await expect(page.locator(".prayer-card").first()).toContainText("Al-Ikhlas");
 });

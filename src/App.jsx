@@ -647,6 +647,96 @@ function QuantityPicker({ value, onChange, label }) {
   );
 }
 
+const WELCOME_PRESETS = [
+  {
+    id: "juz30",
+    title: "Juz 30 complet",
+    detail: "D’An-Naba à An-Nas · 37 sourates",
+    surahs: Array.from({ length: 37 }, (_, i) => 78 + i),
+  },
+  {
+    id: "last10",
+    title: "Les 10 dernières",
+    detail: "D’Al-Fil à An-Nas · 10 sourates",
+    surahs: Array.from({ length: 10 }, (_, i) => 105 + i),
+  },
+  {
+    id: "qul",
+    title: "Al-Fatiha + les Qul",
+    detail: "Al-Ikhlas, Al-Falaq, An-Nas",
+    surahs: [1, 112, 113, 114],
+  },
+];
+
+function Welcome({ fatihaOnly, onPreset, onCustom }) {
+  return (
+    <section className="welcome">
+      <span className="eyebrow">
+        <span /> MÉMORISER. RÉVISER. RECOMMENCER.
+      </span>
+      <h1>
+        Un peu chaque jour.
+        <br />
+        <em>pour ne jamais oublier.</em>
+      </h1>
+      <p className="welcome-lead">
+        Wird répartit ce que tu as mémorisé dans tes prières, thème par
+        thème, pour tout réviser régulièrement sans y penser.
+      </p>
+      {fatihaOnly && (
+        <p className="welcome-note">
+          Al-Fatiha est déjà comptée dans ta mémorisation. Ajoute les
+          sourates que tu récites après elle.
+        </p>
+      )}
+      <div className="welcome-steps">
+        <div>
+          <span className="step-number">1</span>
+          <strong>Dis ce que tu sais</strong>
+          <p>
+            Fatiha, Juz 30 ou n’importe quelles sourates, même en partie.
+          </p>
+        </div>
+        <div>
+          <span className="step-number">2</span>
+          <strong>On répartit</strong>
+          <p>
+            Chaque thème trouve sa place dans une prière, au plafond que tu
+            choisis.
+          </p>
+        </div>
+        <div>
+          <span className="step-number">3</span>
+          <strong>Tu valides</strong>
+          <p>Après chaque prière, un clic. Le cycle avance tout seul.</p>
+        </div>
+      </div>
+      <span className="eyebrow welcome-presets-label">
+        <span /> POUR COMMENCER VITE
+      </span>
+      <div className="welcome-presets">
+        {WELCOME_PRESETS.map((preset) => (
+          <button
+            key={preset.id}
+            type="button"
+            className="preset-card"
+            onClick={() => onPreset(preset.surahs)}
+          >
+            <strong>{preset.title}</strong>
+            <small>{preset.detail}</small>
+          </button>
+        ))}
+      </div>
+      <p className="welcome-custom">
+        Tu préfères choisir toi-même ?{" "}
+        <button type="button" className="text-button" onClick={onCustom}>
+          Choisir mes sourates
+        </button>
+      </p>
+    </section>
+  );
+}
+
 function SurahEditor({ chapter, known, range, onSave, onRemove, onClose }) {
   const partial =
     range && (range.from !== 1 || range.to !== chapter.verses.length);
@@ -1444,25 +1534,18 @@ export default function App() {
             <>
               {view === "today" && (
                 <>
-                  <section className="hero">
-                    <div className="hero-copy">
-                      <span className="eyebrow">
-                        <span /> MÉMORISER. RÉVISER. RECOMMENCER.
-                      </span>
-                      <h1>
-                        Un peu chaque jour.
-                        <br />
-                        <em>pour ne jamais oublier.</em>
-                      </h1>
-                      {corpus.length === 0 && (
-                        <button
-                          className="hero-link"
-                          onClick={() => setModal("surahs")}
-                        >
-                          Choisir mes sourates <Icon name="arrow" size={18} />
-                        </button>
-                      )}
-                    </div>
+                  {corpus.length > 0 && (
+                    <section className="hero">
+                      <div className="hero-copy">
+                        <span className="eyebrow">
+                          <span /> MÉMORISER. RÉVISER. RECOMMENCER.
+                        </span>
+                        <h1>
+                          Un peu chaque jour.
+                          <br />
+                          <em>pour ne jamais oublier.</em>
+                        </h1>
+                      </div>
                     <div
                       className="hero-art"
                       aria-label={`Cycle ${state.cycles + 1}, ${progress} % des versets révisés`}
@@ -1498,33 +1581,14 @@ export default function App() {
                       <span className="art-star star-one">✧</span>
                       <span className="art-star star-two">✦</span>
                     </div>
-                  </section>
-                  {!corpus.length ? (
-                    <section className="empty-state panel">
-                      <div className="empty-icon">
-                        <Icon name="book" size={30} />
-                      </div>
-                      <span className="eyebrow">TON POINT DE DÉPART</span>
-                      <h2>
-                        {state.known.length
-                          ? "Ajoute une sourate à réviser"
-                          : "Tout commence par ce que tu connais."}
-                      </h2>
-                      <p>
-                        {state.known.length
-                          ? "Al-Fatiha est comptée dans ta mémorisation. Choisis aussi les sourates que tu récites après elle."
-                          : "Quelques sourates ou plusieurs juz : sélectionne tes acquis. Nous les répartirons entre tes prières, sans te surcharger."}
-                      </p>
-                      <button
-                        className="button primary"
-                        onClick={() => setModal("surahs")}
-                      >
-                        Choisir mes sourates <Icon name="plus" size={18} />
-                      </button>
-                      <small>
-                        Tu pourras modifier cette sélection à tout moment.
-                      </small>
                     </section>
+                  )}
+                  {!corpus.length ? (
+                    <Welcome
+                      fatihaOnly={state.known.length > 0}
+                      onPreset={(ids) => commit((s) => updateKnown(s, ids))}
+                      onCustom={() => setModal("surahs")}
+                    />
                   ) : (
                     <>
                       <section className="section-heading">
