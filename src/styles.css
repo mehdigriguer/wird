@@ -276,21 +276,21 @@ main {
 }
 .hero {
   background: #edf0e5;
-  min-height: 319px;
   border: 1px solid #e5e9dc;
   border-radius: 15px;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding: 36px 39px;
+  padding: 22px 39px;
   isolation: isolate;
 }
 .hero:after {
   content: "";
   position: absolute;
-  right: -170px;
-  bottom: -290px;
+  right: -122px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 560px;
   height: 560px;
   border-radius: 50%;
@@ -2114,6 +2114,8 @@ dialog::backdrop {
     margin: auto 0;
   }
   .hero:after {
+    top: auto;
+    transform: none;
     right: -250px;
     bottom: -340px;
   }
