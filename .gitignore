@@ -1,5 +1,7 @@
 node_modules/
 dist/
 test-results/
+.env.local
+supabase/.temp/
 playwright-report/
 .DS_Store

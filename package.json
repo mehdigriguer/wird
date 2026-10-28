@@ -13,6 +13,7 @@
     "data:sections": "python3 scripts/fetch-sections.py"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.118.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

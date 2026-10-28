@@ -24,8 +24,21 @@ import {
   downloadText,
   loadState,
   parseBackup,
+  validateState,
 } from "./storage.js";
 import { sectionFor, sectionsForSurah } from "./sections.js";
+import { supabase } from "./supabase.js";
+import {
+  clearSyncMeta,
+  decideFirstSync,
+  decideRefresh,
+  fetchRemote,
+  loadSyncMeta,
+  pushRemote,
+  saveSyncMeta,
+} from "./sync.js";
+import { AccountSection, PasswordRecoveryForm, SyncConflictChoice } from "./account.jsx";
+import { Icon } from "./Icon.jsx";
 import "./styles.css";
 
 const chapters = data.chapters;
@@ -39,87 +52,8 @@ const navItems = [
   ["settings", "settings", "Réglages"],
   ["infos", "info", "Informations"],
 ];
+const accountNavItem = ["account", "user", "Compte"];
 
-function Icon({ name = "book", size = 20, ...props }) {
-  const paths = {
-    book: (
-      <>
-        <path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Z" />
-        <path d="M12 5v15" />
-      </>
-    ),
-    sun: (
-      <>
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" />
-      </>
-    ),
-    sunrise: (
-      <>
-        <path d="M3 17h18M6 17a6 6 0 0 1 12 0M12 2v7m-3-4 3-3 3 3M3 10l2 2m14 0 2-2M3 21h18" />
-      </>
-    ),
-    sunset: (
-      <>
-        <path d="M3 17h18M6 17a6 6 0 0 1 12 0M12 2v7m-3-3 3 3 3-3M3 10l2 2m14 0 2-2M3 21h18" />
-      </>
-    ),
-    moon: <path d="M20.5 14A9 9 0 0 1 10 3a9 9 0 1 0 10.5 11Z" />,
-    repeat: (
-      <>
-        <path d="M20 8a8 8 0 0 0-14-3L3 8m0-5v5h5M4 16a8 8 0 0 0 14 3l3-3m0 5v-5h-5" />
-      </>
-    ),
-    settings: (
-      <>
-        <path d="M4 7h16M4 17h16" />
-        <circle cx="9" cy="7" r="3" />
-        <circle cx="15" cy="17" r="3" />
-      </>
-    ),
-    plus: <path d="M12 5v14M5 12h14" />,
-    check: <path d="m5 12 4 4L19 6" />,
-    arrow: <path d="M4 12h16m-6-6 6 6-6 6" />,
-    close: <path d="m6 6 12 12M6 18 18 6" />,
-    spark: (
-      <path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5Z" />
-    ),
-    shield: (
-      <>
-        <path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6Z" />
-        <path d="m8 12 3 3 5-6" />
-      </>
-    ),
-    info: (
-      <>
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 11v5" />
-        <circle cx="12" cy="8" r="0.5" fill="currentColor" />
-      </>
-    ),
-    download: (
-      <>
-        <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" />
-      </>
-    ),
-  };
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      {...props}
-    >
-      {paths[name] || paths.book}
-    </svg>
-  );
-}
 
 function Modal({ title, subtitle, children, onClose }) {
   const ref = useRef(null);
@@ -1170,6 +1104,152 @@ export default function App() {
   const [modal, setModal] = useState(null);
   const lastRaw = useRef(initial.raw);
   const importRef = useRef(null);
+  const [session, setSession] = useState(null);
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [syncConflict, setSyncConflict] = useState(null);
+  const [syncStatus, setSyncStatus] = useState("off");
+  const syncMeta = useRef(loadSyncMeta(localStorage));
+  const stateRef = useRef(state);
+  const pushTimer = useRef(null);
+  const syncingRef = useRef(false);
+  const userId = session?.user?.id ?? null;
+  useEffect(() => {
+    stateRef.current = state;
+  });
+  useEffect(() => {
+    if (!supabase) return;
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, s) => {
+      setSession(s);
+      if (event === "PASSWORD_RECOVERY") setRecoveryMode(true);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+  useEffect(() => {
+    if (!userId) return;
+    void runSync(userId);
+    const timer = setInterval(() => void runSync(userId), 60000);
+    const onFocus = () => void runSync(userId);
+    window.addEventListener("focus", onFocus);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [userId]);
+
+  async function runSync(uid) {
+    if (syncingRef.current) return;
+    syncingRef.current = true;
+    try {
+      if (syncMeta.current === null) {
+        // Première connexion du compte sur cet appareil.
+        setSyncStatus("syncing");
+        const remote = await fetchRemote(supabase, uid);
+        const decision = decideFirstSync(stateRef.current, remote);
+        if (decision === "ask") {
+          setSyncConflict(remote);
+          setSyncStatus("off");
+        } else if (decision === "upload") {
+          await pushNow(uid);
+        } else if (decision === "download") {
+          applyRemote(remote);
+        } else {
+          // Rien des deux côtés : la meta est initialisée et le premier
+          // changement local déclenchera l'envoi.
+          const t = new Date().toISOString();
+          syncMeta.current = { updatedAt: t, syncedAt: t };
+          saveSyncMeta(localStorage, syncMeta.current);
+          setSyncStatus("synced");
+        }
+      } else {
+        const remote = await fetchRemote(supabase, uid);
+        const decision = decideRefresh(syncMeta.current, remote);
+        if (decision === "download") applyRemote(remote);
+        else if (decision === "upload") await pushNow(uid);
+      }
+    } catch {
+      setSyncStatus("error");
+    } finally {
+      syncingRef.current = false;
+    }
+  }
+
+  async function pushNow(uid) {
+    setSyncStatus("syncing");
+    try {
+      const t = await pushRemote(supabase, uid, stateRef.current);
+      const prev = syncMeta.current;
+      syncMeta.current = {
+        updatedAt: prev && prev.updatedAt > t ? prev.updatedAt : t,
+        syncedAt: t,
+      };
+      saveSyncMeta(localStorage, syncMeta.current);
+      setSyncStatus("synced");
+    } catch {
+      setSyncStatus("error");
+    }
+  }
+
+  function schedulePush() {
+    if (!supabase || !session || syncMeta.current === null) return;
+    const uid = session.user.id;
+    syncMeta.current = {
+      ...syncMeta.current,
+      updatedAt: new Date().toISOString(),
+    };
+    saveSyncMeta(localStorage, syncMeta.current);
+    clearTimeout(pushTimer.current);
+    pushTimer.current = setTimeout(() => void pushNow(uid), 1500);
+  }
+
+  function applyRemote(remote) {
+    // Le local a changé pendant le téléchargement : le plus récent gagne.
+    if (syncMeta.current && syncMeta.current.updatedAt > remote.updated_at) {
+      void pushNow(userId);
+      return;
+    }
+    try {
+      const validated = rollover(validateState(remote.state, chapters));
+      const raw = JSON.stringify(validated);
+      localStorage.setItem(STORAGE_KEY, raw);
+      lastRaw.current = raw;
+      clearTimeout(pushTimer.current);
+      setState(validated);
+      syncMeta.current = {
+        updatedAt: remote.updated_at,
+        syncedAt: remote.updated_at,
+      };
+      saveSyncMeta(localStorage, syncMeta.current);
+      setSyncStatus("synced");
+      setNotice("Progression synchronisée avec ton compte.");
+    } catch (error) {
+      setNotice(error.message);
+      setSyncStatus("error");
+    }
+  }
+
+  async function resolveConflict(choice) {
+    const remote = syncConflict;
+    setSyncConflict(null);
+    if (!remote || !userId) return;
+    if (choice === "remote") applyRemote(remote);
+    else await pushNow(userId);
+  }
+
+  async function onSignOut() {
+    clearTimeout(pushTimer.current);
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      /* La session locale est nettoyée même si l'appel réseau échoue. */
+    }
+    clearSyncMeta(localStorage);
+    syncMeta.current = null;
+    setSyncConflict(null);
+    setSyncStatus("off");
+    setNotice("Déconnecté. Ta progression reste enregistrée sur cet appareil.");
+  }
   const corpus = useMemo(
     () => buildCorpus(chapters, state.known, state.ranges),
     [state.known, state.ranges],
@@ -1273,6 +1353,7 @@ export default function App() {
     }
     setState(next);
     setNotice("");
+    schedulePush();
     return true;
   }
 
@@ -1411,7 +1492,7 @@ export default function App() {
         </a>
         <p className="brand-caption">UN PEU, CHAQUE JOUR</p>
         <nav aria-label="Navigation principale">
-          {navItems.map(([id, icon, label]) => (
+          {(supabase ? [...navItems, accountNavItem] : navItems).map(([id, icon, label]) => (
             <button
               key={id}
               className={`nav-item ${view === id ? "selected" : ""}`}
@@ -1435,7 +1516,7 @@ export default function App() {
         </div>
         <div className="local-note">
           <Icon name="shield" size={16} />
-          <span>Personnel. Sans compte.</span>
+          <span>{session ? session.user.email : "Personnel. Sans compte."}</span>
         </div>
       </aside>
       <div className="main-shell">
@@ -1996,10 +2077,9 @@ export default function App() {
                   <section className="panel settings-panel">
                     <h2>Tes données restent chez toi.</h2>
                     <p>
-                      Pas de compte, pas de synchronisation entre appareils. La
-                      sauvegarde est liée à ce navigateur et à cette adresse du
-                      site. Effacer les données du navigateur efface ta
-                      progression.
+                      {session
+                        ? "Ta progression est synchronisée avec ton compte. L’export ci-dessous te donne toujours une copie complète de tes données."
+                        : "Pas de compte, pas de synchronisation entre appareils. La sauvegarde est liée à ce navigateur et à cette adresse du site. Effacer les données du navigateur efface ta progression."}
                     </p>
                     <div className="button-row">
                       <button
@@ -2019,6 +2099,13 @@ export default function App() {
                   </section>
                 </>
               )}
+              {view === "account" && (
+                <AccountSection
+                  session={session}
+                  syncStatus={syncStatus}
+                  onSignOut={() => void onSignOut()}
+                />
+              )}
             </>
           )}
           <footer className="page-footer">
@@ -2037,6 +2124,36 @@ export default function App() {
         aria-label="Importer un fichier de sauvegarde"
         tabIndex="-1"
       />
+      {syncConflict && (
+        <Modal
+          title="Quelle version garder ?"
+          subtitle="Première connexion du compte sur cet appareil."
+          onClose={() => void onSignOut()}
+        >
+          <SyncConflictChoice
+            localState={state}
+            remote={syncConflict}
+            onChoose={(choice) => void resolveConflict(choice)}
+          />
+        </Modal>
+      )}
+      {recoveryMode && (
+        <Modal
+          title="Nouveau mot de passe"
+          subtitle="Choisis un nouveau mot de passe pour ton compte."
+          onClose={() => {
+            setRecoveryMode(false);
+            void supabase.auth.signOut();
+          }}
+        >
+          <PasswordRecoveryForm
+            onDone={(message) => {
+              setRecoveryMode(false);
+              setNotice(message);
+            }}
+          />
+        </Modal>
+      )}
       {modal === "surahs" && (
         <SurahPicker
           known={state.known}

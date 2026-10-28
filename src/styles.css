@@ -2392,3 +2392,206 @@ dialog::backdrop {
     scroll-behavior: auto !important;
   }
 }
+
+/* Compte et synchronisation */
+.step-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  margin-bottom: 8px;
+}
+.auth-card {
+  background: #fffefa;
+  border: 1px solid #e9ede3;
+  border-radius: 12px;
+  padding: 22px 22px 16px;
+  max-width: 380px;
+  margin: 30px auto 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.auth-card h2 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--deep);
+}
+.auth-hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.auth-tabs {
+  display: flex;
+  background: #eef2e6;
+  border-radius: 9px;
+  padding: 3px;
+}
+.auth-tabs button {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  border-radius: 7px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.auth-tabs button.active {
+  background: #fffefa;
+  color: var(--deep);
+  box-shadow: 0 1px 3px rgba(34, 63, 49, 0.12);
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 26rem;
+}
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12px;
+  color: #506447;
+}
+.auth-field input {
+  border: 1px solid #cbd8c2;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #fffefa;
+  color: var(--deep);
+  font-size: 15px;
+}
+.auth-submit {
+  width: 100%;
+}
+.auth-back {
+  align-self: center;
+  font-size: 11px;
+}
+.form-error {
+  color: #9b553d;
+  font-size: 13px;
+}
+.form-notice {
+  color: var(--green);
+  font-size: 13px;
+}
+.account-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 24px;
+}
+.account-title {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 500;
+  color: #223f31;
+  margin: 14px 0 0;
+  overflow-wrap: anywhere;
+}
+.account-sync {
+  margin: 10px 0 0;
+}
+.account-actions {
+  justify-content: center;
+}
+.sync-badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: #eef2e6;
+  color: var(--muted);
+}
+.sync-badge.synced {
+  background: #e3efe0;
+  color: var(--green);
+}
+.sync-badge.error {
+  background: #f6e5df;
+  color: #9b553d;
+}
+
+/* Choix de version au premier login */
+.conflict-lead {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+.conflict-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.conflict-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  background: #fffefa;
+  border: 1px solid #e9ede3;
+  border-radius: 12px;
+  padding: 18px 14px 16px;
+  cursor: pointer;
+  text-align: center;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+.conflict-card:hover {
+  background: #eef3e6;
+  border-color: #c9d8b8;
+  transform: translateY(-1px);
+}
+.conflict-card strong {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--deep);
+}
+.conflict-stats {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.conflict-date {
+  font-size: 10px;
+  color: #87917f;
+}
+.conflict-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  margin-top: 4px;
+}
+.conflict-note {
+  font-size: 10.5px;
+  color: var(--muted);
+  text-align: center;
+  margin: 16px 0 0;
+}
+@media (max-width: 560px) {
+  .conflict-grid {
+    grid-template-columns: 1fr;
+  }
+}
