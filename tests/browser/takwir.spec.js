@@ -29,7 +29,7 @@ test("At-Takwir themes appear in the accordion and drive the daily plan", async 
   await expect(themes).toContainText("une révélation véridique");
   await expect(themes).toContainText("15–29");
   await page.getByRole("button", { name: "Fermer" }).click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await page
     .getByRole("button", { name: "J’ai prié avec ces versets" })
     .click();

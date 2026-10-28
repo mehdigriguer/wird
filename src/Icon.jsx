@@ -30,11 +30,10 @@ export function Icon({ name = "book", size = 20, ...props }) {
         <path d="M20 8a8 8 0 0 0-14-3L3 8m0-5v5h5M4 16a8 8 0 0 0 14 3l3-3m0 5v-5h-5" />
       </>
     ),
-    settings: (
+    list: (
       <>
-        <path d="M4 7h16M4 17h16" />
-        <circle cx="9" cy="7" r="3" />
-        <circle cx="15" cy="17" r="3" />
+        <path d="M8 6h13M8 12h13M8 18h13" />
+        <path d="M3 6h.01M3 12h.01M3 18h.01" />
       </>
     ),
     plus: <path d="M12 5v14M5 12h14" />,
@@ -67,6 +66,9 @@ export function Icon({ name = "book", size = 20, ...props }) {
       <>
         <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" />
       </>
+    ),
+    logout: (
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4m7 14 5-5-5-5m5 5H9" />
     ),
     upload: (
       <>

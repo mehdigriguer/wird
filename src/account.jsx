@@ -2,35 +2,18 @@ import React, { useState } from "react";
 import { supabase } from "./supabase.js";
 import { Icon } from "./Icon.jsx";
 
-const SYNC_LABELS = {
+export const SYNC_LABELS = {
   syncing: "Synchronisation…",
   synced: "Synchronisé",
   error: "Sync en échec",
   off: "Sync en pause",
 };
 
-const BENEFITS = [
-  {
-    icon: "repeat",
-    title: "Synchronisé",
-    text: "Tu valides une prière sur ton téléphone, ton ordinateur le sait déjà.",
-  },
-  {
-    icon: "shield",
-    title: "Sauvegardé",
-    text: "Effacer les données du navigateur ne fait plus tout perdre.",
-  },
-  {
-    icon: "download",
-    title: "Toujours exportable",
-    text: "Tes données restent les tiennes, export complet en un clic.",
-  },
-];
-
-// Page Compte : connexion, création de compte et mot de passe oublié.
+// Formulaire de connexion, création de compte et mot de passe oublié.
+// Utilisé dans la page Mes données (carte) et dans la modale de la topbar.
 // App reçoit les changements de session via onAuthStateChange, pas besoin
 // de remonter le résultat ici.
-export function AccountSection({ session, syncStatus, onSignOut, dataActions }) {
+export function AuthForm() {
   const [mode, setMode] = useState("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,33 +26,6 @@ export function AccountSection({ session, syncStatus, onSignOut, dataActions }) 
     setError("");
     setMessage("");
   };
-
-  if (session) {
-    return (
-      <section className="welcome account-hero">
-        <span className="account-avatar" aria-hidden="true">
-          {(session.user.email || "?")[0].toUpperCase()}
-        </span>
-        <h1 className="account-title">{session.user.email}</h1>
-        <p className="account-sync">
-          <span className={`sync-badge ${syncStatus}`}>
-            {SYNC_LABELS[syncStatus]}
-          </span>
-        </p>
-        <p className="welcome-lead">
-          Ta progression est rattachée à ton compte. Chaque validation est
-          synchronisée automatiquement entre tes appareils, et l’export
-          complet reste disponible sur cette page.
-        </p>
-        <div className="button-row account-actions">
-          <button className="button secondary" onClick={onSignOut}>
-            Se déconnecter
-          </button>
-        </div>
-        {dataActions}
-      </section>
-    );
-  }
 
   async function submit(event) {
     event.preventDefault();
@@ -111,32 +67,7 @@ export function AccountSection({ session, syncStatus, onSignOut, dataActions }) 
   }
 
   return (
-    <section className="welcome account-hero">
-      <span className="eyebrow">
-        <span /> TON WIRD, PARTOUT
-      </span>
-      <h1>
-        Ta progression te suit.
-        <br />
-        <em>sur tous tes appareils.</em>
-      </h1>
-      <p className="welcome-lead">
-        Un compte pour retrouver tes sourates, ton cycle et tes réglages,
-        que tu ouvres Wird sur ton téléphone ou ton ordinateur. Sans compte,
-        tout reste dans ce navigateur.
-      </p>
-      <div className="welcome-steps">
-        {BENEFITS.map((b) => (
-          <div key={b.icon}>
-            <span className="step-icon">
-              <Icon name={b.icon} size={12} />
-            </span>
-            <strong>{b.title}</strong>
-            <p>{b.text}</p>
-          </div>
-        ))}
-      </div>
-      <form className="auth-card" onSubmit={submit}>
+    <form className="auth-form" onSubmit={submit}>
         {mode === "reset" ? (
           <>
             <h2>Mot de passe oublié</h2>
@@ -240,9 +171,7 @@ export function AccountSection({ session, syncStatus, onSignOut, dataActions }) 
             )}
           </>
         )}
-      </form>
-      {dataActions}
-    </section>
+    </form>
   );
 }
 

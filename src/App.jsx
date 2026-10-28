@@ -37,7 +37,7 @@ import {
   pushRemote,
   saveSyncMeta,
 } from "./sync.js";
-import { AccountSection, PasswordRecoveryForm, SyncConflictChoice } from "./account.jsx";
+import { AuthForm, PasswordRecoveryForm, SyncConflictChoice, SYNC_LABELS } from "./account.jsx";
 import { Icon } from "./Icon.jsx";
 import "./styles.css";
 
@@ -46,16 +46,15 @@ const pageLabel = (n) => ({ 0.25: "¼ page", 0.5: "½ page", 1: "1 page" })[n];
 const verseCount = (passages) =>
   passages.reduce((n, p) => n + (p && !p.blocked ? p.to - p.from + 1 : 0), 0);
 const navItems = [
-  ["today", "sun", "Aujourd’hui"],
+  ["today", "list", "Programme"],
+  ["prayers", "moon", "Prières"],
   ["memory", "book", "Mémorisation"],
   ["sections", "spark", "Découpage"],
-  ["settings", "settings", "Réglages"],
-  ["infos", "info", "Informations"],
 ];
-const accountNavItem = ["account", "user", "Compte"];
+const accountNavItem = ["account", "user", "Mes données"];
 
 
-function Modal({ title, subtitle, children, onClose }) {
+function Modal({ title, subtitle, children, onClose, compact = false }) {
   const ref = useRef(null);
   const opener = useRef(document.activeElement);
   const titleId = useId();
@@ -70,6 +69,7 @@ function Modal({ title, subtitle, children, onClose }) {
   return (
     <dialog
       ref={ref}
+      className={compact ? "compact" : undefined}
       aria-labelledby={titleId}
       onCancel={onClose}
       onClick={(e) => {
@@ -448,45 +448,23 @@ function ExtraPicker({ prayersEnabled, onAdd, onClose, onGoSettings }) {
         {!locked && (
           <div className="field">
             Nombre de rakaat
-            <div
-              className="segmented compact stretch"
-              role="group"
-              aria-label="Nombre de rakaat"
-            >
-              {[2, 4, 6, 8, 10, 12].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  className={rakaat === n ? "selected" : ""}
-                  aria-pressed={rakaat === n}
-                  onClick={() => setRakaat(n)}
-                >
-                  {n}
-                </button>
-              ))}
-            </div>
+            <QuantityPicker
+              value={rakaat}
+              onChange={setRakaat}
+              label="Nombre de rakaat"
+              options={[2, 4, 6, 8, 10, 12]}
+              stretch
+            />
           </div>
         )}
         <div className="field">
           Nombre de page par rakaat
-          <div
-            className="segmented compact stretch"
-            role="group"
-            aria-label="Nombre de page par rakaat"
-          >
-            {[0.25, 0.5, 1].map((n) => (
-              <button
-                key={n}
-                type="button"
-                className={limit === n ? "selected" : ""}
-                aria-pressed={limit === n}
-                aria-label={pageLabel(n)}
-                onClick={() => setLimit(n)}
-              >
-                {{ 0.25: "¼", 0.5: "½", 1: "1" }[n]}
-              </button>
-            ))}
-          </div>
+          <QuantityPicker
+            value={limit}
+            onChange={setLimit}
+            label="Nombre de page par rakaat"
+            stretch
+          />
         </div>
         <div className="notice">
           <Icon name="spark" />
@@ -498,7 +476,7 @@ function ExtraPicker({ prayersEnabled, onAdd, onClose, onGoSettings }) {
               className="text-button link-inline"
               onClick={onGoSettings}
             >
-              Prières du programme
+              Prières
             </button>
             .
           </p>
@@ -561,17 +539,31 @@ function SectionsDetail({ sections }) {
   );
 }
 
-function QuantityPicker({ value, onChange, label }) {
-  const shortLabel = (n) => ({ 0.25: "¼", 0.5: "½", 1: "1" })[n];
+const RAKAAT_STEPS = [2, 4, 6, 8, 10, 12];
+const nextLimitValue = { 0.25: 0.5, 0.5: 1, 1: 0.25 };
+
+function QuantityPicker({
+  value,
+  onChange,
+  label,
+  options = [0.25, 0.5, 1],
+  stretch = false,
+}) {
+  const shortLabel = (n) => ({ 0.25: "¼", 0.5: "½", 1: "1" })[n] ?? String(n);
+  const longLabel = (n) => pageLabel(n) ?? `${n} rakaat`;
   return (
-    <div className="segmented compact" role="group" aria-label={label}>
-      {[0.25, 0.5, 1].map((n) => (
+    <div
+      className={`segmented compact${stretch ? " stretch" : ""}`}
+      role="group"
+      aria-label={label}
+    >
+      {options.map((n) => (
         <button
           key={n}
           type="button"
           className={value === n ? "selected" : ""}
           aria-pressed={value === n}
-          aria-label={pageLabel(n)}
+          aria-label={longLabel(n)}
           onClick={() => onChange(n)}
         >
           {shortLabel(n)}
@@ -1108,6 +1100,8 @@ export default function App() {
   const [recoveryMode, setRecoveryMode] = useState(false);
   const [syncConflict, setSyncConflict] = useState(null);
   const [syncStatus, setSyncStatus] = useState("off");
+  const [authModal, setAuthModal] = useState(false);
+  const [infoModal, setInfoModal] = useState(false);
   const syncMeta = useRef(loadSyncMeta(localStorage));
   const stateRef = useRef(state);
   const pushTimer = useRef(null);
@@ -1432,6 +1426,15 @@ export default function App() {
     commit((s) => ({ ...s, limits: { ...s.limits, [prayer.id]: limit } }));
   }
 
+  function onQiyamRakaat(n) {
+    commit((s) => {
+      const rakaatOverrides = { ...s.rakaatOverrides };
+      if (n === 2) delete rakaatOverrides.qiyam;
+      else rakaatOverrides.qiyam = n;
+      return { ...s, rakaatOverrides };
+    });
+  }
+
   // Plafond ajusté à la volée sur une carte : vaut pour aujourd'hui
   // seulement, les réglages redeviennent la référence dès demain.
   function onTodayLimit(prayer, limit) {
@@ -1527,6 +1530,32 @@ export default function App() {
               { weekday: "long", day: "numeric", month: "long" },
             )}
           </span>
+          {supabase && (
+            <button
+              className="account-chip"
+              onClick={() =>
+                session ? setView("account") : setAuthModal(true)
+              }
+              aria-label={
+                session ? `Connecté : ${session.user.email}` : "Se connecter"
+              }
+            >
+              {session ? (
+                <>
+                  <span className="chip-avatar" aria-hidden="true">
+                    {(session.user.email || "?")[0].toUpperCase()}
+                  </span>
+                  <span className="chip-email">{session.user.email}</span>
+                  <span className={`chip-dot ${syncStatus}`} aria-hidden="true" />
+                </>
+              ) : (
+                <>
+                  <Icon name="user" size={15} />
+                  <span>Se connecter</span>
+                </>
+              )}
+            </button>
+          )}
         </header>
         <main id="main" tabIndex="-1">
           <div className="announcement" role="status">
@@ -1915,86 +1944,11 @@ export default function App() {
                   </div>
                 </>
               )}
-              {view === "infos" && (
+              {view === "prayers" && (
                 <>
-                  <PageHeading title="Informations." />
+                  <PageHeading title="Prières du programme." />
                   <section className="panel settings-panel">
-                    <h2>Comment le programme est calculé</h2>
-                    <ol className="rules-list">
-                      <li>
-                        Le programme du jour rassemble les 5 prières
-                        obligatoires et les nawafil activées dans Prières du
-                        programme. « Ajouter une prière » n’ajoute une prière
-                        que pour aujourd’hui.
-                      </li>
-                      <li>
-                        Les versets défilent dans l’ordre du Quran, une seule
-                        sourate par rakaat, versets entiers uniquement. Seuls
-                        les versets déclarés appris sont planifiés.
-                      </li>
-                      <li>
-                        Chaque prière a un plafond par rakaat : ¼, ½ ou 1 page
-                        du mushaf (½ page par défaut). Les longueurs utilisent
-                        les lignes du mushaf de Médine à 604 pages : une ligne
-                        entamée compte entière, donc les portions restent
-                        prudentes.
-                      </li>
-                      <li>
-                        Une rakaat enchaîne les thèmes entiers qui tiennent dans
-                        son plafond. Un thème trop long est coupé par la
-                        longueur. Un verset seul plus long que le plafond attend
-                        une prière au plafond suffisant, il n’est jamais sauté.
-                      </li>
-                      <li>
-                        Si la coupure tombe juste avant la fin d’un thème, la
-                        rakaat peut dépasser son plafond de 50 % pour le
-                        terminer. Jamais plus, jamais pour enchaîner au-delà.
-                      </li>
-                      <li>
-                        Une sourate qui tient dans une prière entière n’est
-                        jamais coupée entre deux prières. Si elle ne peut pas
-                        finir dans la prière courante, son début est reporté à
-                        la suivante et la rakaat reste libre.
-                      </li>
-                      <li>
-                        Valide les prières dans l’ordre du programme. « J’ai
-                        prié autrement » (en groupe, ou seul avec d’autres
-                        passages) conserve les passages à réviser, sans faire
-                        avancer le cycle.
-                      </li>
-                      <li>
-                        L’estimation simule les jours à venir au rythme actuel,
-                        sans nawafil supplémentaires, en supposant que tu
-                        valides ces passages.
-                      </li>
-                      <li>
-                        Changer les sourates ou leurs portions recommence le
-                        tour en cours. Les validations et tours terminés restent
-                        dans l’historique.
-                      </li>
-                    </ol>
-                    <p className="source-note">
-                      Références :{" "}
-                      <a
-                        href={data.documentation}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Quran.com / Quran Foundation
-                      </a>
-                      , métadonnées récupérées le{" "}
-                      {new Date(data.fetchedAt).toLocaleDateString("fr-FR")}.
-                      Aucun texte coranique n’est généré. Ce site organise tes
-                      révisions, il ne donne pas d’avis religieux.
-                    </p>
-                  </section>
-                </>
-              )}
-              {view === "settings" && (
-                <>
-                  <PageHeading title="Réglages." />
-                  <section className="panel settings-panel">
-                    <h2>Prières du programme</h2>                    <div className="prayer-tree">
+                    <div className="prayer-tree">
                       {[
                         {
                           cat: "Fard",
@@ -2026,10 +1980,44 @@ export default function App() {
                               const p = PRAYERS.find((x) => x.id === id);
                               const on =
                                 !p.optional || state.prayersEnabled[p.id];
+                              const nextLimit = nextLimitValue[state.limits[p.id]];
+                              const qiyamCount =
+                                state.rakaatOverrides?.qiyam ?? p.rakaat;
+                              const nextQiyam =
+                                RAKAAT_STEPS[
+                                  (RAKAAT_STEPS.indexOf(qiyamCount) + 1) %
+                                    RAKAAT_STEPS.length
+                                ];
                               return (
                                 <div
                                   className={`prayer-cell ${on ? "on" : ""}`}
                                   key={p.id}
+                                  {...(p.optional && {
+                                    role: "switch",
+                                    "aria-checked": on,
+                                    "aria-label": `${p.name} dans le programme`,
+                                    tabIndex: 0,
+                                    onClick: () =>
+                                      commit((s) => ({
+                                        ...s,
+                                        prayersEnabled: {
+                                          ...s.prayersEnabled,
+                                          [p.id]: !s.prayersEnabled[p.id],
+                                        },
+                                      })),
+                                    onKeyDown: (e) => {
+                                      if (e.key !== "Enter" && e.key !== " ")
+                                        return;
+                                      e.preventDefault();
+                                      commit((s) => ({
+                                        ...s,
+                                        prayersEnabled: {
+                                          ...s.prayersEnabled,
+                                          [p.id]: !s.prayersEnabled[p.id],
+                                        },
+                                      }));
+                                    },
+                                  })}
                                 >
                                   <div className="cell-top">
                                     <span className="cell-name">
@@ -2038,32 +2026,35 @@ export default function App() {
                                       </strong>
                                       {p.detail && <small>{p.detail}</small>}
                                     </span>
-                                    {p.optional && (
-                                      <button
-                                        type="button"
-                                        className={`prayer-toggle ${on ? "on" : ""}`}
-                                        aria-pressed={on}
-                                        aria-label={`${p.name} dans le programme`}
-                                        onClick={() =>
-                                          commit((s) => ({
-                                            ...s,
-                                            prayersEnabled: {
-                                              ...s.prayersEnabled,
-                                              [p.id]: !s.prayersEnabled[p.id],
-                                            },
-                                          }))
-                                        }
-                                      >
-                                        <span />
-                                      </button>
-                                    )}
                                   </div>
                                   {on && (
-                                    <QuantityPicker
-                                      value={state.limits[p.id]}
-                                      onChange={(n) => onLimit(p, n)}
-                                      label={`Plafond ${p.name}`}
-                                    />
+                                    <div
+                                      className="cell-chips"
+                                      onClick={(e) => e.stopPropagation()}
+                                      onKeyDown={(e) => e.stopPropagation()}
+                                    >
+                                      {p.id === "qiyam" && (
+                                        <button
+                                          type="button"
+                                          className="limit-chip"
+                                          aria-label={`Nombre de rakaat Qiyam : ${qiyamCount}. Cliquer pour passer à ${nextQiyam}`}
+                                          onClick={() =>
+                                            onQiyamRakaat(nextQiyam)
+                                          }
+                                        >
+                                          {qiyamCount} rakaat
+                                        </button>
+                                      )}
+                                      <button
+                                        type="button"
+                                        className="limit-chip"
+                                        aria-label={`Plafond ${p.name} : ${pageLabel(state.limits[p.id])}. Cliquer pour passer à ${pageLabel(nextLimit)}`}
+                                        onClick={() => onLimit(p, nextLimit)}
+                                      >
+                                        max {pageLabel(state.limits[p.id])}{" "}
+                                        par rakaat
+                                      </button>
+                                    </div>
                                   )}
                                 </div>
                               );
@@ -2076,31 +2067,74 @@ export default function App() {
                   {!supabase && (
                     <DataPanel session={session} state={state} importRef={importRef} />
                   )}
+                  <button className="info-link" onClick={() => setInfoModal(true)}>
+                    <Icon name="info" size={14} /> Comment le programme est
+                    calculé ?
+                  </button>
                 </>
               )}
               {view === "account" && (
-                <AccountSection
-                  session={session}
-                  syncStatus={syncStatus}
-                  onSignOut={() => void onSignOut()}
-                  dataActions={
-                    <div className="account-data">
+                <>
+                  <PageHeading
+                    title="Mes données."
+                    text={
+                      session
+                        ? "Ta progression est synchronisée avec ton compte. Tu peux aussi gérer la sauvegarde de cet appareil."
+                        : "Connecte-toi pour synchroniser ta progression entre tes appareils, ou gère la sauvegarde de cet appareil."
+                    }
+                  />
+                  {session && (
+                    <section className="panel account-summary">
+                      <span className="account-avatar" aria-hidden="true">
+                        {(session.user.email || "?")[0].toUpperCase()}
+                      </span>
+                      <div className="account-id">
+                        <strong>{session.user.email}</strong>
+                        <span className={`sync-badge ${syncStatus}`}>
+                          {SYNC_LABELS[syncStatus]}
+                        </span>
+                      </div>
+                    </section>
+                  )}
+                  <div className="data-list">
+                    {!session && (
                       <button
-                        className="text-button"
-                        onClick={() => downloadBackup(state)}
+                        className="data-row"
+                        onClick={() => setAuthModal(true)}
                       >
-                        <Icon name="download" size={14} /> Exporter ma
-                        sauvegarde
+                        <Icon name="user" size={16} />
+                        <span>Se connecter</span>
+                        <Icon name="arrow" size={14} />
                       </button>
+                    )}
+                    <button
+                      className="data-row"
+                      onClick={() => downloadBackup(state)}
+                    >
+                      <Icon name="download" size={16} />
+                      <span>Exporter ma sauvegarde</span>
+                      <Icon name="arrow" size={14} />
+                    </button>
+                    <button
+                      className="data-row"
+                      onClick={() => importRef.current.click()}
+                    >
+                      <Icon name="upload" size={16} />
+                      <span>Importer une sauvegarde</span>
+                      <Icon name="arrow" size={14} />
+                    </button>
+                    {session && (
                       <button
-                        className="text-button"
-                        onClick={() => importRef.current.click()}
+                        className="data-row"
+                        onClick={() => void onSignOut()}
                       >
-                        <Icon name="upload" size={14} /> Importer une sauvegarde
+                        <Icon name="logout" size={16} />
+                        <span>Se déconnecter</span>
+                        <Icon name="arrow" size={14} />
                       </button>
-                    </div>
-                  }
-                />
+                    )}
+                  </div>
+                </>
               )}
             </>
           )}
@@ -2120,6 +2154,25 @@ export default function App() {
         aria-label="Importer un fichier de sauvegarde"
         tabIndex="-1"
       />
+      {infoModal && (
+        <Modal
+          title="Comment le programme est calculé"
+          subtitle="Les règles qui répartissent tes révisions dans tes prières."
+          onClose={() => setInfoModal(false)}
+        >
+          <ProgramRules />
+        </Modal>
+      )}
+      {authModal && !session && (
+        <Modal
+          title="Connexion"
+          subtitle="Synchronise ta progression entre tes appareils."
+          onClose={() => setAuthModal(false)}
+          compact
+        >
+          <AuthForm />
+        </Modal>
+      )}
       {syncConflict && (
         <Modal
           title="Quelle version garder ?"
@@ -2141,6 +2194,7 @@ export default function App() {
             setRecoveryMode(false);
             void supabase.auth.signOut();
           }}
+          compact
         >
           <PasswordRecoveryForm
             onDone={(message) => {
@@ -2202,7 +2256,7 @@ export default function App() {
           onClose={() => setModal(null)}
           onGoSettings={() => {
             setModal(null);
-            setView("settings");
+            setView("prayers");
           }}
           onAdd={(extra) => {
             if (
@@ -2246,6 +2300,80 @@ function DataPanel({ session, state, importRef }) {
         </button>
       </div>
     </section>
+  );
+}
+
+function ProgramRules() {
+  return (
+    <>
+<ol className="rules-list">
+  <li>
+    Le programme du jour rassemble les 5 prières
+    obligatoires et les nawafil activées dans Prières du
+    programme. « Ajouter une prière » n’ajoute une prière
+    que pour aujourd’hui.
+  </li>
+  <li>
+    Les versets défilent dans l’ordre du Quran, une seule
+    sourate par rakaat, versets entiers uniquement. Seuls
+    les versets déclarés appris sont planifiés.
+  </li>
+  <li>
+    Chaque prière a un plafond par rakaat : ¼, ½ ou 1 page
+    du mushaf (½ page par défaut). Les longueurs utilisent
+    les lignes du mushaf de Médine à 604 pages : une ligne
+    entamée compte entière, donc les portions restent
+    prudentes.
+  </li>
+  <li>
+    Une rakaat enchaîne les thèmes entiers qui tiennent dans
+    son plafond. Un thème trop long est coupé par la
+    longueur. Un verset seul plus long que le plafond attend
+    une prière au plafond suffisant, il n’est jamais sauté.
+  </li>
+  <li>
+    Si la coupure tombe juste avant la fin d’un thème, la
+    rakaat peut dépasser son plafond de 50 % pour le
+    terminer. Jamais plus, jamais pour enchaîner au-delà.
+  </li>
+  <li>
+    Une sourate qui tient dans une prière entière n’est
+    jamais coupée entre deux prières. Si elle ne peut pas
+    finir dans la prière courante, son début est reporté à
+    la suivante et la rakaat reste libre.
+  </li>
+  <li>
+    Valide les prières dans l’ordre du programme. « J’ai
+    prié autrement » (en groupe, ou seul avec d’autres
+    passages) conserve les passages à réviser, sans faire
+    avancer le cycle.
+  </li>
+  <li>
+    L’estimation simule les jours à venir au rythme actuel,
+    sans nawafil supplémentaires, en supposant que tu
+    valides ces passages.
+  </li>
+  <li>
+    Changer les sourates ou leurs portions recommence le
+    tour en cours. Les validations et tours terminés restent
+    dans l’historique.
+  </li>
+</ol>
+<p className="source-note">
+  Références :{" "}
+  <a
+    href={data.documentation}
+    target="_blank"
+    rel="noreferrer"
+  >
+    Quran.com / Quran Foundation
+  </a>
+  , métadonnées récupérées le{" "}
+  {new Date(data.fetchedAt).toLocaleDateString("fr-FR")}.
+  Aucun texte coranique n’est généré. Ce site organise tes
+  révisions, il ne donne pas d’avis religieux.
+</p>
+    </>
   );
 }
 

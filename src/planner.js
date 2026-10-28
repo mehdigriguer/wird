@@ -140,6 +140,7 @@ export function newState(date = localDate()) {
       qiyam: false,
     },
     day: { date, extras: [], results: {}, limitOverrides: {} },
+    rakaatOverrides: {},
     history: [],
   };
 }
@@ -280,18 +281,26 @@ export function dailyPrayers(state, extras = state.day.extras) {
     icon: "spark",
     extra: true,
   });
+  const rakaatOverrides = state.rakaatOverrides ?? {};
   return [
     ...extras.filter((extra) => extra.after === null).map(asExtra),
     ...PRAYERS.filter(
       (prayer) => !prayer.optional || enabled[prayer.id] === true,
-    ).flatMap((prayer) => [
-      {
-        ...prayer,
-        limit: overrides[prayer.id] ?? state.limits[prayer.id],
-        customLimit: prayer.id in overrides,
-      },
-      ...extras.filter((extra) => extra.after === prayer.id).map(asExtra),
-    ]),
+    ).flatMap((prayer) => {
+      const rakaat = rakaatOverrides[prayer.id] ?? prayer.rakaat;
+      return [
+        {
+          ...prayer,
+          rakaat,
+          limit: overrides[prayer.id] ?? state.limits[prayer.id],
+          customLimit: prayer.id in overrides,
+          // Qiyam n'a pas de nombre religieux fixe : le détail reflète le
+          // nombre choisi, contrairement aux autres prières où il est fixe.
+          detail: prayer.detail || `${rakaat} rakaat`,
+        },
+        ...extras.filter((extra) => extra.after === prayer.id).map(asExtra),
+      ];
+    }),
   ];
 }
 

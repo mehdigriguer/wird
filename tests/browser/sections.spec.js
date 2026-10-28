@@ -40,7 +40,7 @@ test("Al-Kahf shows its themes and whole source-backed morning passages", async 
   await page.getByRole("button", { name: "Fermer" }).click();
   await expect(page.getByRole("dialog")).toHaveCount(0);
   await page.screenshot({ path: testInfo.outputPath("kahf-sections.png") });
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await page
     .getByRole("button", { name: "J’ai prié avec ces versets" })
     .click();
@@ -60,12 +60,11 @@ test("a theme ends before the next even with room, and small caps fill inside th
   page,
 }) => {
   await seed(page, updateKnown(fullState(localDate()), [18]));
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   await page
-    .getByRole("group", { name: "Plafond Fajr" })
-    .getByRole("button", { name: "¼ page" })
-    .click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+    .getByRole("button", { name: /Plafond Fajr/ })
+    .click(); // 1 → ¼
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   const fajr = page.locator(".prayer-card").first();
   await expect(fajr).toContainText("Le Coran et l’épreuve");
   await expect(fajr).not.toContainText("la fermeté dans la foi");

@@ -1096,7 +1096,7 @@ select {
 }
 .welcome-steps {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   max-width: 760px;
   margin: 34px auto 0;
@@ -1137,7 +1137,7 @@ select {
 }
 .welcome-presets {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
   max-width: 760px;
   margin: 12px auto 0;
@@ -1221,7 +1221,6 @@ select {
 .page-heading p {
   font-size: 13px;
   color: var(--muted);
-  max-width: 600px;
 }
 .memory-summary {
   display: flex;
@@ -1449,34 +1448,6 @@ select {
 .settings-panel {
   margin-bottom: 23px;
 }
-.prayer-toggle {
-  position: relative;
-  width: 44px;
-  height: 26px;
-  border-radius: 20px;
-  border: 0;
-  background: #dce4d2;
-  padding: 0;
-  flex-shrink: 0;
-  transition: background 0.18s;
-}
-.prayer-toggle span {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 3px #17382d33;
-  transition: left 0.18s;
-}
-.prayer-toggle.on {
-  background: var(--green);
-}
-.prayer-toggle.on span {
-  left: 21px;
-}
 .settings-panel h2 {
   font-size: 28px;
   margin-bottom: 12px;
@@ -1487,10 +1458,13 @@ select {
   max-width: 750px;
 }
 .prayer-tree {
-  margin-top: 8px;
+  margin-top: 0;
 }
 .tree-group {
   margin-top: 16px;
+}
+.tree-group:first-child {
+  margin-top: 0;
 }
 .tree-cat {
   display: block;
@@ -1503,7 +1477,7 @@ select {
 }
 .tree-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
   margin-top: 10px;
   align-items: start;
@@ -2011,10 +1985,27 @@ dialog::backdrop {
     font-size: 27px;
   }
 }
-@media (max-width: 620px) {
+@media (max-width: 1150px) {
   .tree-grid {
-    grid-template-columns: repeat(auto-fit, minmax(124px, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
+}
+@media (max-width: 950px) {
+  .tree-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .tree-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 400px) {
+  .tree-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 620px) {
   .alt-action .tooltip:after {
     right: auto;
     left: 50%;
@@ -2284,7 +2275,7 @@ dialog::backdrop {
   }
   .progress-stats {
     flex: 1;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px 6px;
   }
   .progress-stats b {
@@ -2296,34 +2287,6 @@ dialog::backdrop {
   }
   .settings-panel {
     padding: 22px;
-  }
-  .prayer-toggle {
-    position: relative;
-    width: 42px;
-    height: 24px;
-    border-radius: 20px;
-    border: 1px solid #cbd8c2;
-    background: #e6ebdd;
-    padding: 0;
-    flex-shrink: 0;
-  }
-  .prayer-toggle span {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 1px 3px #17382d33;
-    transition: left 0.15s;
-  }
-  .prayer-toggle.on {
-    background: var(--green);
-    border-color: var(--green);
-  }
-  .prayer-toggle.on span {
-    left: 20px;
   }
   .settings-panel h2 {
     font-size: 25px;
@@ -2409,24 +2372,6 @@ dialog::backdrop {
   color: #fff;
   margin-bottom: 8px;
 }
-.auth-card {
-  background: #fffefa;
-  border: 1px solid #e9ede3;
-  border-radius: 12px;
-  padding: 22px 22px 16px;
-  max-width: 380px;
-  margin: 30px auto 0;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-}
-.auth-card h2 {
-  font-family: var(--serif);
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--deep);
-}
 .auth-hint {
   font-size: 11.5px;
   color: var(--muted);
@@ -2499,20 +2444,6 @@ dialog::backdrop {
   color: #fff;
   font-family: var(--serif);
   font-size: 24px;
-}
-.account-hero .account-title {
-  font-family: var(--serif);
-  font-size: clamp(19px, 5vw, 30px);
-  font-weight: 500;
-  color: #223f31;
-  margin: 14px 0 0;
-  overflow-wrap: anywhere;
-}
-.account-sync {
-  margin: 10px 0 0;
-}
-.account-actions {
-  justify-content: center;
 }
 .sync-badge {
   font-size: 10px;
@@ -2601,26 +2532,211 @@ dialog::backdrop {
   }
 }
 
-/* Export / import discrets en bas de la carte compte */
-.account-data {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  margin-top: 26px;
-  padding-top: 14px;
-  border-top: 1px solid #e5e9dc;
-  color: #b6bfae;
-}
-.account-data .text-button {
+/* Bouton compte dans la topbar */
+.account-chip {
+  grid-column: 3;
+  justify-self: end;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background: #fffefa;
+  border-radius: 99px;
+  padding: 6px 12px;
   font-size: 11px;
-  min-height: 32px;
-  color: var(--muted);
-}
-.account-data .text-button:hover {
+  font-weight: 600;
   color: var(--green);
+  white-space: nowrap;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.account-chip:hover {
+  background: #eef3e6;
+  border-color: #c9d8b8;
+}
+.chip-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.chip-email {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--deep);
+  font-weight: 550;
+}
+.chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b6bfae;
+  flex-shrink: 0;
+}
+.chip-dot.synced {
+  background: #58a36c;
+}
+.chip-dot.syncing {
+  background: #d9a84e;
+}
+.chip-dot.error {
+  background: #c06a4d;
+}
+@media (max-width: 620px) {
+  .chip-email {
+    display: none;
+  }
+  .account-chip {
+    padding: 5px 7px;
+  }
+}
+
+/* Modale étroite pour les formulaires simples (auth, mot de passe) */
+dialog.compact {
+  width: 440px;
+}
+
+/* Page Mes données */
+.account-summary {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: 660px;
+  padding: 18px 20px;
+}
+.account-id {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+  min-width: 0;
+}
+.account-id strong {
+  font-size: 14px;
+  color: var(--deep);
+  overflow-wrap: anywhere;
+}
+.account-id .sync-badge {
+  align-self: flex-start;
+}
+.data-list {
+  background: #fffefa;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 660px;
+  margin-top: 18px;
+  overflow: hidden;
+}
+.data-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 13px 16px;
+  background: none;
+  border: 0;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--deep);
+  text-align: left;
+  transition: background 0.15s;
+}
+.data-row:hover {
+  background: #f2f6ec;
+}
+.data-row + .data-row {
+  border-top: 1px solid #edf1e6;
+}
+.data-row > svg:first-child {
+  color: var(--green);
+  flex-shrink: 0;
+}
+.data-row > span {
+  flex: 1;
+}
+.data-row > svg:last-child {
+  color: #b6bfae;
+}
+.auth-form h2 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--deep);
+}
+
+/* Lien discret vers les règles du programme */
+.info-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 22px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 11.5px;
+  padding: 8px 6px;
+}
+.info-link:hover {
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* Chips de réglage dans les cellules de prières */
+.cell-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cell-chips .limit-chip {
+  padding: 4px 10px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Cellules centrées, toggle en coin */
+.prayer-cell {
+  position: relative;
+  align-items: center;
+  text-align: center;
+}
+.prayer-cell .cell-top {
+  justify-content: center;
+}
+.cell-name small {
+  white-space: nowrap;
+}
+.prayer-cell .cell-chips {
+  justify-content: center;
+}
+
+
+/* Carte-interrupteur : toute la cellule active/désactive la prière */
+.prayer-cell[role="switch"] {
+  cursor: pointer;
+}
+.prayer-cell[role="switch"]:hover {
+  border-color: #b9cbb0;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 620px) {
+  .cell-chips .limit-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    white-space: normal;
+    line-height: 1.3;
+  }
 }

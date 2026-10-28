@@ -28,7 +28,7 @@ test("Abasa themes appear in the accordion and drive the daily plan", async ({
   await expect(themes).toContainText("L’effroi du Jugement");
   await expect(themes).toContainText("33–42");
   await page.getByRole("button", { name: "Fermer" }).click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await page
     .getByRole("button", { name: "J’ai prié avec ces versets" })
     .click();

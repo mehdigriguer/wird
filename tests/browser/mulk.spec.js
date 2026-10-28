@@ -35,7 +35,7 @@ test("Al-Mulk themes appear on the Découpage tab and drive the daily plan", asy
   await expect(themes).toContainText("Ibn Kathir (Quran.com)");
   await page.screenshot({ path: testInfo.outputPath("mulk-sections.png") });
   await page.getByRole("button", { name: "Fermer" }).click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await page
     .getByRole("button", { name: "J’ai prié avec ces versets" })
     .click();

@@ -63,6 +63,7 @@ test("première sync : l'ordre des clés jsonb ne compte pas comme une différen
       epoch: local.epoch,
       cycles: local.cycles,
       cursor: local.cursor,
+      rakaatOverrides: local.rakaatOverrides,
       prayersEnabled: local.prayersEnabled,
       limits: local.limits,
       ranges: local.ranges,

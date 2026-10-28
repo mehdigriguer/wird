@@ -31,7 +31,7 @@ test("An-Nazi'at themes appear in the accordion and drive the daily plan", async
   );
   await expect(themes).toContainText("27–46");
   await page.getByRole("button", { name: "Fermer" }).click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await page
     .getByRole("button", { name: "J’ai prié avec ces versets" })
     .click();

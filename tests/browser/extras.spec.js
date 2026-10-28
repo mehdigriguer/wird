@@ -20,7 +20,7 @@ test("changing page scrolls back to the top", async ({ page }) => {
   await page.getByRole("button", { name: "Mémorisation", exact: true }).click();
   await page.evaluate(() => window.scrollTo(0, 800));
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
 });
 
@@ -41,7 +41,7 @@ test("the notice links to the program settings", async ({ page }) => {
   await page.getByRole("button", { name: "Ajouter une prière" }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toContainText("Ajout exceptionnel");
-  await dialog.getByRole("button", { name: "Prières du programme" }).click();
+  await dialog.getByRole("button", { name: "Prières", exact: true }).click();
   await expect(dialog).toHaveCount(0);
   await expect(
     page.getByRole("heading", { name: "Prières du programme" }),
@@ -115,9 +115,9 @@ test("rakaat are locked per prayer, only qiyam is free", async ({ page }) => {
   await expect(rakaatGroup).toBeVisible();
   // switching from a locked prayer resets the free count to 2
   await expect(
-    rakaatGroup.getByRole("button", { name: "2", exact: true }),
+    rakaatGroup.getByRole("button", { name: "2 rakaat", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
-  await rakaatGroup.getByRole("button", { name: "6", exact: true }).click();
+  await rakaatGroup.getByRole("button", { name: "6 rakaat", exact: true }).click();
   await page.getByRole("button", { name: "Ajouter aujourd’hui" }).click();
   expect((await stored(page)).day.extras[1].rakaat).toBe(6);
 });
@@ -139,24 +139,24 @@ test("the picker follows the settings toggles", async ({ page }) => {
     dialog.getByRole("radio", { name: "Qiyam/Tahajjud" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Fermer" }).click();
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   await page.getByLabel("Avant Dhuhr dans le programme").click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await page.getByRole("button", { name: "Ajouter une prière" }).click();
   await expect(dialog.getByRole("radio", { name: "Avant Dhuhr" })).toHaveCount(
     0,
   );
   await page.getByRole("button", { name: "Fermer" }).click();
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   await page.getByLabel("Avant Dhuhr dans le programme").click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
 
   // enable duha, disable witr and fajr in settings
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   await page.getByLabel("Duha dans le programme").click();
   await page.getByLabel("Witr dans le programme").click();
   await page.getByLabel("Fajr dans le programme").click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await page.getByRole("button", { name: "Ajouter une prière" }).click();
   await expect(dialog.getByRole("radio", { name: "Duha" })).toHaveCount(0);
   await expect(dialog.getByRole("radio", { name: "Fajr" })).toBeVisible();
@@ -222,54 +222,50 @@ test("each named extra lands in its expected slot", async ({ page }) => {
 
 test("the quantity picker follows the enabled prayers", async ({ page }) => {
   await seed(page, updateKnown(fullState(localDate()), [112]));
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
-  const panel = page.locator(".settings-panel", {
-    hasText: "Prières du programme",
-  });
-  // fard prayers have no toggle but always show their picker
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
+  const panel = page.locator(".settings-panel").first();
+  // fard prayers have no toggle but always show their chip
   await expect(panel.getByLabel("Subh dans le programme")).toHaveCount(0);
   await expect(
-    panel.getByRole("group", { name: "Plafond Subh" }),
+    panel.getByRole("button", { name: /Plafond Subh/ }),
   ).toBeVisible();
   for (const name of ["Fajr", "Chafaa", "Witr"])
     await expect(
-      panel.getByRole("group", { name: `Plafond ${name}` }),
+      panel.getByRole("button", { name: new RegExp(`Plafond ${name}`) }),
     ).toBeVisible();
-  // duha is off: its card shows no picker until enabled
-  await expect(panel.getByRole("group", { name: "Plafond Duha" })).toHaveCount(
-    0,
-  );
+  // duha is off: its card shows no chip until enabled
+  await expect(
+    panel.getByRole("button", { name: /Plafond Duha/ }),
+  ).toHaveCount(0);
   await page.getByLabel("Duha dans le programme").click();
   await expect(
-    panel.getByRole("group", { name: "Plafond Duha" }),
+    panel.getByRole("button", { name: /Plafond Duha/ }),
   ).toBeVisible();
   await page.getByLabel("Chafaa dans le programme").click();
   await expect(
-    panel.getByRole("group", { name: "Plafond Chafaa" }),
+    panel.getByRole("button", { name: /Plafond Chafaa/ }),
   ).toHaveCount(0);
   // the limit chosen in the merged section applies to the day
-  await panel
-    .getByRole("group", { name: "Plafond Duha" })
-    .getByRole("button", { name: "1 page" })
-    .click();
-  expect((await stored(page)).limits.duha).toBe(1);
+  const duhaChip = panel.getByRole("button", { name: /Plafond Duha/ });
+  await duhaChip.click(); // 1 → ¼
+  expect((await stored(page)).limits.duha).toBe(0.25);
 });
 
 test("prayer toggles in settings drive the daily program", async ({ page }) => {
   await seed(page, updateKnown(fullState(localDate()), [112]));
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Prières du programme" }),
   ).toBeVisible();
   const fajrToggle = page.getByLabel("Fajr dans le programme");
-  await expect(fajrToggle).toHaveAttribute("aria-pressed", "true");
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await expect(fajrToggle).toHaveAttribute("aria-checked", "true");
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await expect(page.locator(".prayer-card")).toHaveCount(8);
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   await fajrToggle.click();
   await page.getByLabel("Chafaa dans le programme").click();
   await page.getByLabel("Witr dans le programme").click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   await expect(page.locator(".prayer-card")).toHaveCount(5);
   await expect(page.locator(".prayer-card").first()).toContainText("Subh");
   expect((await stored(page)).prayersEnabled).toEqual({
@@ -299,10 +295,28 @@ test("a fresh install starts with fajr, witr and the obligatory five", async ({
   await expect(page.locator(".prayer-card")).toHaveCount(7);
   await expect(page.locator(".prayer-card").first()).toContainText("Fajr");
   await expect(page.locator(".prayer-card").last()).toContainText("Witr");
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
   await expect(
-    page
-      .getByRole("group", { name: "Plafond Subh" })
-      .getByRole("button", { name: "½ page" }),
-  ).toHaveAttribute("aria-pressed", "true");
+    page.getByRole("button", { name: /Plafond Subh/ }),
+  ).toHaveAttribute("aria-label", /½ page/);
+});
+
+test("the qiyam rakaat chip rotates through even counts and persists", async ({
+  page,
+}) => {
+  await seed(page, updateKnown(fullState(localDate()), [112]));
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
+  await page.getByLabel("Qiyam/Tahajjud dans le programme").click();
+  const chip = page.getByRole("button", {
+    name: /Nombre de rakaat Qiyam/,
+  });
+  await expect(chip).toHaveAttribute("aria-label", /: 2\./);
+  await chip.click();
+  await expect(chip).toHaveAttribute("aria-label", /: 4\./);
+  expect((await stored(page)).rakaatOverrides).toEqual({ qiyam: 4 });
+  for (let i = 0; i < 4; i++) await chip.click();
+  await expect(chip).toHaveAttribute("aria-label", /: 12\./);
+  await chip.click();
+  await expect(chip).toHaveAttribute("aria-label", /: 2\./);
+  expect((await stored(page)).rakaatOverrides).toEqual({});
 });

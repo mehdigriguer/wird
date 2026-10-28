@@ -192,12 +192,11 @@ test("legacy local data and exports keep their whole surahs and revision progres
   delete legacy.ranges;
   await seed(page, legacy);
   await expect(page.locator(".prayer-card.active")).toContainText("Subh");
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
-  await page
-    .getByRole("group", { name: "Plafond Dhuhr" })
-    .getByRole("button", { name: "½ page" })
-    .click();
-  await page.getByRole("button", { name: "Aujourd’hui", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
+  const dhuhrChip = page.getByRole("button", { name: /Plafond Dhuhr/ });
+  await dhuhrChip.click(); // 1 → ¼
+  await dhuhrChip.click(); // ¼ → ½
+  await page.getByRole("button", { name: "Programme", exact: true }).click();
   const migrated = await stored(page);
   expect(migrated.version).toBe(2);
   expect(migrated.ranges).toEqual({});
@@ -222,7 +221,7 @@ test("partial portions round-trip through export and import", async ({
     2: { from: 30, to: 40 },
   });
   await seed(page, state);
-  await page.getByRole("button", { name: "Compte", exact: true }).click();
+  await page.getByRole("button", { name: "Mes données", exact: true }).click();
   const downloading = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exporter ma sauvegarde" }).click();
   const stream = await (await downloading).createReadStream();
@@ -267,7 +266,7 @@ test("nawafil are configured, added, removed and forecast does not change actual
   await page
     .getByRole("dialog")
     .getByRole("group", { name: "Nombre de rakaat" })
-    .getByRole("button", { name: "4", exact: true })
+    .getByRole("button", { name: "4 rakaat", exact: true })
     .click();
   await page
     .getByRole("dialog")
@@ -332,11 +331,10 @@ test("a midnight reload clears extras without advancing revision", async ({
   await seed(page, state);
   await expect(page.locator(".prayer-card")).toHaveCount(8);
   await expect(page.locator(".prayer-card").first()).toContainText("v. 11");
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
-  await page
-    .getByRole("group", { name: "Plafond Dhuhr" })
-    .getByRole("button", { name: "½ page" })
-    .click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
+  const dhuhrChip = page.getByRole("button", { name: /Plafond Dhuhr/ });
+  await dhuhrChip.click(); // 1 → ¼
+  await dhuhrChip.click(); // ¼ → ½
   expect((await stored(page)).cursor).toBe(10);
   expect((await stored(page)).day.date).toBe(localDate());
   expect((await stored(page)).day.extras).toEqual([]);
@@ -347,7 +345,7 @@ test("export contains actual data and invalid imports leave current progress int
 }) => {
   await page.goto("/");
   await chooseSurahs(page);
-  await page.getByRole("button", { name: "Compte", exact: true }).click();
+  await page.getByRole("button", { name: "Mes données", exact: true }).click();
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exporter ma sauvegarde" }).click();
   const download = await downloadPromise;
@@ -464,40 +462,29 @@ test("unsaved progress survives an update from another tab", async ({
   await seed(page, updateKnown(fullState(localDate()), [2]));
   const second = await context.newPage();
   await second.goto("/");
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
-  await second.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Prières", exact: true }).click();
+  await second.getByRole("button", { name: "Prières", exact: true }).click();
   await page.evaluate(() => {
     Storage.prototype.setItem = () => {
       throw new DOMException("Quota exceeded", "QuotaExceededError");
     };
   });
-  await page
-    .getByRole("group", { name: "Plafond Dhuhr" })
-    .getByRole("button", { name: "¼ page" })
-    .click();
+  await page.getByRole("button", { name: /Plafond Dhuhr/ }).click();
   await expect(page.getByRole("alert")).toBeVisible();
-  await second
-    .getByRole("group", { name: "Plafond Isha" })
-    .getByRole("button", { name: "½ page" })
-    .click();
+  const ishaChip = second.getByRole("button", { name: /Plafond Isha/ });
+  await ishaChip.click(); // 1 → ¼
+  await ishaChip.click(); // ¼ → ½
   await expect(page.getByRole("status")).toContainText("Un autre onglet");
-  const dhuhrQuarter = page
-    .getByRole("group", { name: "Plafond Dhuhr" })
-    .getByRole("button", { name: "¼ page" });
-  await expect(dhuhrQuarter).toHaveAttribute("aria-pressed", "true");
-  await page
-    .getByRole("group", { name: "Plafond Asr" })
-    .getByRole("button", { name: "½ page" })
-    .click();
+  const dhuhrChip = page.getByRole("button", { name: /Plafond Dhuhr/ });
+  await expect(dhuhrChip).toHaveAttribute("aria-label", /¼ page/);
+  await page.getByRole("button", { name: /Plafond Asr/ }).click();
   await expect(page.getByRole("status")).toContainText(
     "Exporte tes changements",
   );
-  await expect(dhuhrQuarter).toHaveAttribute("aria-pressed", "true");
+  await expect(dhuhrChip).toHaveAttribute("aria-label", /¼ page/);
   await expect(
-    page
-      .getByRole("group", { name: "Plafond Asr" })
-      .getByRole("button", { name: "1 page" }),
-  ).toHaveAttribute("aria-pressed", "true");
+    page.getByRole("button", { name: /Plafond Asr/ }),
+  ).toHaveAttribute("aria-label", /1 page/);
   await second.close();
 });
 

@@ -92,6 +92,15 @@ export function validateState(value, chapters) {
     !integer(value.epoch)
   )
     fail();
+  // Nombre de rakaat personnalisable (qiyam uniquement pour l'instant).
+  if (value.rakaatOverrides === undefined) {
+    value = { ...value, rakaatOverrides: {} };
+  } else {
+    if (!object(value.rakaatOverrides)) fail();
+    for (const [id, n] of Object.entries(value.rakaatOverrides)) {
+      if (id !== "qiyam" || ![2, 4, 6, 8, 10, 12].includes(n)) fail();
+    }
+  }
   if (!object(value.limits)) fail();
   const limits = {};
   for (const p of PRAYERS) {
