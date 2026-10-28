@@ -1994,8 +1994,7 @@ export default function App() {
                 <>
                   <PageHeading title="Réglages." />
                   <section className="panel settings-panel">
-                    <h2>Prières du programme</h2>
-                    <div className="prayer-tree">
+                    <h2>Prières du programme</h2>                    <div className="prayer-tree">
                       {[
                         {
                           cat: "Fard",
@@ -2074,29 +2073,9 @@ export default function App() {
                       ))}
                     </div>
                   </section>
-                  <section className="panel settings-panel">
-                    <h2>Tes données restent chez toi.</h2>
-                    <p>
-                      {session
-                        ? "Ta progression est synchronisée avec ton compte. L’export ci-dessous te donne toujours une copie complète de tes données."
-                        : "Pas de compte, pas de synchronisation entre appareils. La sauvegarde est liée à ce navigateur et à cette adresse du site. Effacer les données du navigateur efface ta progression."}
-                    </p>
-                    <div className="button-row">
-                      <button
-                        className="button primary"
-                        onClick={() => downloadBackup(state)}
-                      >
-                        <Icon name="download" size={17} /> Exporter ma
-                        sauvegarde
-                      </button>
-                      <button
-                        className="button secondary"
-                        onClick={() => importRef.current.click()}
-                      >
-                        Importer une sauvegarde
-                      </button>
-                    </div>
-                  </section>
+                  {!supabase && (
+                    <DataPanel session={session} state={state} importRef={importRef} />
+                  )}
                 </>
               )}
               {view === "account" && (
@@ -2104,6 +2083,23 @@ export default function App() {
                   session={session}
                   syncStatus={syncStatus}
                   onSignOut={() => void onSignOut()}
+                  dataActions={
+                    <div className="account-data">
+                      <button
+                        className="text-button"
+                        onClick={() => downloadBackup(state)}
+                      >
+                        <Icon name="download" size={14} /> Exporter ma
+                        sauvegarde
+                      </button>
+                      <button
+                        className="text-button"
+                        onClick={() => importRef.current.click()}
+                      >
+                        <Icon name="upload" size={14} /> Importer une sauvegarde
+                      </button>
+                    </div>
+                  }
                 />
               )}
             </>
@@ -2226,6 +2222,30 @@ export default function App() {
         />
       )}
     </div>
+  );
+}
+
+function DataPanel({ session, state, importRef }) {
+  return (
+    <section className="panel settings-panel">
+      <h2>Tes données restent chez toi.</h2>
+      <p>
+        {session
+          ? "Ta progression est synchronisée avec ton compte. L’export ci-dessous te donne toujours une copie complète de tes données."
+          : "Pas de compte, pas de synchronisation entre appareils. La sauvegarde est liée à ce navigateur et à cette adresse du site. Effacer les données du navigateur efface ta progression."}
+      </p>
+      <div className="button-row">
+        <button className="button primary" onClick={() => downloadBackup(state)}>
+          <Icon name="download" size={17} /> Exporter ma sauvegarde
+        </button>
+        <button
+          className="button secondary"
+          onClick={() => importRef.current.click()}
+        >
+          Importer une sauvegarde
+        </button>
+      </div>
+    </section>
   );
 }
 

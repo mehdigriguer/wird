@@ -30,7 +30,7 @@ const BENEFITS = [
 // Page Compte : connexion, création de compte et mot de passe oublié.
 // App reçoit les changements de session via onAuthStateChange, pas besoin
 // de remonter le résultat ici.
-export function AccountSection({ session, syncStatus, onSignOut }) {
+export function AccountSection({ session, syncStatus, onSignOut, dataActions }) {
   const [mode, setMode] = useState("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,13 +59,14 @@ export function AccountSection({ session, syncStatus, onSignOut }) {
         <p className="welcome-lead">
           Ta progression est rattachée à ton compte. Chaque validation est
           synchronisée automatiquement entre tes appareils, et l’export
-          complet reste disponible dans Réglages.
+          complet reste disponible sur cette page.
         </p>
         <div className="button-row account-actions">
           <button className="button secondary" onClick={onSignOut}>
             Se déconnecter
           </button>
         </div>
+        {dataActions}
       </section>
     );
   }
@@ -240,6 +241,7 @@ export function AccountSection({ session, syncStatus, onSignOut }) {
           </>
         )}
       </form>
+      {dataActions}
     </section>
   );
 }

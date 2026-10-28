@@ -222,7 +222,7 @@ test("partial portions round-trip through export and import", async ({
     2: { from: 30, to: 40 },
   });
   await seed(page, state);
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Compte", exact: true }).click();
   const downloading = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exporter ma sauvegarde" }).click();
   const stream = await (await downloading).createReadStream();
@@ -347,7 +347,7 @@ test("export contains actual data and invalid imports leave current progress int
 }) => {
   await page.goto("/");
   await chooseSurahs(page);
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Compte", exact: true }).click();
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Exporter ma sauvegarde" }).click();
   const download = await downloadPromise;

@@ -68,6 +68,11 @@ export function Icon({ name = "book", size = 20, ...props }) {
         <path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5" />
       </>
     ),
+    upload: (
+      <>
+        <path d="M12 15V3m-5 5 5-5 5 5M4 16v5h16v-5" />
+      </>
+    ),
     device: (
       <>
         <rect x="6" y="2.5" width="12" height="19" rx="2.5" />

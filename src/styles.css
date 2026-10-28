@@ -2044,15 +2044,20 @@ dialog::backdrop {
     gap: 4px;
   }
   .nav-item {
-    width: 25%;
+    flex: 1;
+    min-width: 0;
     flex-direction: column;
     gap: 5px;
-    font-size: 9px;
-    padding: 12px 3px 8px;
+    font-size: 8.5px;
+    padding: 12px 2px 8px;
     border-radius: 0;
   }
   .nav-item > span:not(.nav-dot) {
     display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .nav-item .nav-dot {
     display: none;
@@ -2495,9 +2500,9 @@ dialog::backdrop {
   font-family: var(--serif);
   font-size: 24px;
 }
-.account-title {
+.account-hero .account-title {
   font-family: var(--serif);
-  font-size: clamp(22px, 2.2vw, 30px);
+  font-size: clamp(19px, 5vw, 30px);
   font-weight: 500;
   color: #223f31;
   margin: 14px 0 0;
@@ -2594,4 +2599,28 @@ dialog::backdrop {
   .conflict-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Export / import discrets en bas de la carte compte */
+.account-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e9dc;
+  color: #b6bfae;
+}
+.account-data .text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  min-height: 32px;
+  color: var(--muted);
+}
+.account-data .text-button:hover {
+  color: var(--green);
 }

@@ -17,10 +17,10 @@ async function stored(page) {
 
 test("changing page scrolls back to the top", async ({ page }) => {
   await seed(page, updateKnown(fullState(localDate()), [18, 67, 112]));
-  await page.getByRole("button", { name: "Réglages", exact: true }).click();
+  await page.getByRole("button", { name: "Mémorisation", exact: true }).click();
   await page.evaluate(() => window.scrollTo(0, 800));
   expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
-  await page.getByRole("button", { name: "Mémorisation", exact: true }).click();
+  await page.getByRole("button", { name: "Réglages", exact: true }).click();
   expect(await page.evaluate(() => window.scrollY)).toBe(0);
 });
 
