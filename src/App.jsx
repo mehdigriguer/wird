@@ -606,8 +606,8 @@ function Welcome({ fatihaOnly, onPreset, onCustom }) {
         <em>pour ne jamais oublier.</em>
       </h1>
       <p className="welcome-lead">
-        Wird répartit ce que tu as mémorisé dans tes prières, thème par
-        thème, pour tout réviser régulièrement sans y penser.
+        Wird répartit ta mémorisation du coran dans tes prières pour tout
+        réviser régulièrement sans y penser.
       </p>
       {fatihaOnly && (
         <p className="welcome-note">
@@ -615,28 +615,6 @@ function Welcome({ fatihaOnly, onPreset, onCustom }) {
           sourates que tu récites après elle.
         </p>
       )}
-      <div className="welcome-steps">
-        <div>
-          <span className="step-number">1</span>
-          <strong>Dis ce que tu sais</strong>
-          <p>
-            Fatiha, Juz 30 ou n’importe quelles sourates, même en partie.
-          </p>
-        </div>
-        <div>
-          <span className="step-number">2</span>
-          <strong>On répartit</strong>
-          <p>
-            Chaque thème trouve sa place dans une prière, au plafond que tu
-            choisis.
-          </p>
-        </div>
-        <div>
-          <span className="step-number">3</span>
-          <strong>Tu valides</strong>
-          <p>Après chaque prière, un clic. Le cycle avance tout seul.</p>
-        </div>
-      </div>
       <span className="eyebrow welcome-presets-label">
         <span /> POUR COMMENCER VITE
       </span>
