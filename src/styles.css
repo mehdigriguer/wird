@@ -2500,8 +2500,8 @@ dialog::backdrop {
   border: 1px solid var(--border);
   background: #fffefa;
   border-radius: 99px;
-  padding: 6px 12px;
-  font-size: 11px;
+  padding: 9px 16px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--green);
   white-space: nowrap;
@@ -2531,6 +2531,16 @@ dialog::backdrop {
   white-space: nowrap;
   color: var(--deep);
   font-weight: 550;
+}
+@media (max-width: 1050px) {
+  .chip-email {
+    max-width: 100px;
+  }
+}
+@media (max-width: 700px) {
+  .chip-email {
+    display: none;
+  }
 }
 .chip-dot {
   width: 7px;
