@@ -2206,14 +2206,16 @@ dialog::backdrop {
   }
   .page-footer {
     flex-wrap: wrap;
-    gap: 8px 14px;
+    gap: 4px 14px;
     margin-top: 30px;
     padding: 21px 0;
-    font-size: 8px;
+    font-size: 9px;
+  }
+  .footer-brand {
+    width: 100%;
   }
   .page-footer > span:last-child {
-    margin-left: 0;
-    width: 100%;
+    margin-left: auto;
   }
   .page-heading h1 {
     font-size: 35px;
