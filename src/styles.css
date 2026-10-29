@@ -2073,7 +2073,7 @@ dialog::backdrop {
   }
   .hero {
     padding: 27px 23px;
-    min-height: calc(100dvh - 48px - 20px - 80px - 130px);
+    min-height: calc(100dvh - 48px - 20px - 80px - 66px);
     border-radius: 12px;
     flex-direction: column;
     align-items: flex-start;
