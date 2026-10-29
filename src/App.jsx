@@ -2080,7 +2080,7 @@ export default function App() {
                     text={
                       session
                         ? "Ta progression est synchronisée avec ton compte. Tu peux aussi gérer la sauvegarde de cet appareil."
-                        : "Connecte-toi pour synchroniser ta progression entre tes appareils, ou gère la sauvegarde de cet appareil."
+                        : undefined
                     }
                   />
                   {session && (
